@@ -25,12 +25,32 @@ const initialMessages: ChatMessage[] = [
   },
 ];
 
+const clientNicknameStorageKey = 'chatlaetus-client-nickname';
+const clientNicknameMaxLength = 80;
+
 const createClientSessionId = (): string => {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
     return crypto.randomUUID();
   }
 
   return `chatlaetus-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+};
+
+const readStoredClientNickname = (): string => {
+  if (typeof window === 'undefined') {
+    return '';
+  }
+
+  try {
+    return (
+      window.localStorage.getItem(clientNicknameStorageKey)?.slice(
+        0,
+        clientNicknameMaxLength,
+      ) ?? ''
+    );
+  } catch {
+    return '';
+  }
 };
 
 type ChatLaetusPageProps = {
@@ -41,6 +61,7 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [clientSessionId] = useState(createClientSessionId);
+  const [clientNickname, setClientNickname] = useState(readStoredClientNickname);
   const [input, setInput] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
@@ -52,6 +73,24 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
   useEffect(() => {
     listEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [messages, isSending]);
+
+  useEffect(() => {
+    try {
+      const trimmedClientNickname = clientNickname.trim();
+
+      if (trimmedClientNickname) {
+        window.localStorage.setItem(
+          clientNicknameStorageKey,
+          clientNickname.slice(0, clientNicknameMaxLength),
+        );
+        return;
+      }
+
+      window.localStorage.removeItem(clientNicknameStorageKey);
+    } catch {
+      // Storage can be unavailable in restricted browsing contexts.
+    }
+  }, [clientNickname]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -75,6 +114,7 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
         message: userMessage.content,
         conversationId,
         clientSessionId,
+        clientNickname,
       });
 
       setConversationId(result.conversationId);
@@ -184,23 +224,48 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
           )}
 
           <form className={styles.form} onSubmit={handleSubmit}>
-            <label className={styles.inputLabel} htmlFor={'chatlaetus-input'}>
-              메시지
-            </label>
-            <textarea
-              className={styles.textarea}
-              id={'chatlaetus-input'}
-              value={input}
-              rows={3}
-              placeholder={
-                isConfigured
-                  ? '프로젝트, 기술 스택, 경험에 대해 질문해보세요.'
-                  : 'VITE_API_BASE_URL 설정이 필요합니다.'
-              }
-              disabled={!isConfigured || isSending}
-              onChange={(event) => setInput(event.target.value)}
-              onKeyDown={handleInputKeyDown}
-            />
+            <div className={styles.nicknameField}>
+              <label
+                className={styles.inputLabel}
+                htmlFor={'chatlaetus-nickname'}
+              >
+                닉네임
+              </label>
+              <input
+                className={styles.nicknameInput}
+                id={'chatlaetus-nickname'}
+                type={'text'}
+                value={clientNickname}
+                maxLength={clientNicknameMaxLength}
+                autoComplete={'nickname'}
+                placeholder={'선택 입력'}
+                disabled={isSending}
+                onChange={(event) =>
+                  setClientNickname(
+                    event.target.value.slice(0, clientNicknameMaxLength),
+                  )
+                }
+              />
+            </div>
+            <div className={styles.messageField}>
+              <label className={styles.inputLabel} htmlFor={'chatlaetus-input'}>
+                메시지
+              </label>
+              <textarea
+                className={styles.textarea}
+                id={'chatlaetus-input'}
+                value={input}
+                rows={3}
+                placeholder={
+                  isConfigured
+                    ? '프로젝트, 기술 스택, 경험에 대해 질문해보세요.'
+                    : 'VITE_API_BASE_URL 설정이 필요합니다.'
+                }
+                disabled={!isConfigured || isSending}
+                onChange={(event) => setInput(event.target.value)}
+                onKeyDown={handleInputKeyDown}
+              />
+            </div>
             <button
               className={styles.sendButton}
               type={'submit'}

@@ -9,6 +9,7 @@ type SendChatMessageParams = {
   message: string;
   conversationId: string | null;
   clientSessionId: string;
+  clientNickname?: string;
 };
 
 type SendChatMessageResult = {
@@ -183,12 +184,15 @@ export const sendChatLaetusMessage = async ({
   message,
   conversationId,
   clientSessionId,
+  clientNickname,
 }: SendChatMessageParams): Promise<SendChatMessageResult> => {
   const configuredApiBaseUrl = getChatLaetusApiBaseUrl();
 
   if (!configuredApiBaseUrl) {
     throw new Error('VITE_API_BASE_URL이 설정되지 않았습니다.');
   }
+
+  const trimmedClientNickname = clientNickname?.trim();
 
   const response = await fetch(
     `${normalizeApiUrl(configuredApiBaseUrl)}${chatEndpoint}`,
@@ -201,6 +205,9 @@ export const sendChatLaetusMessage = async ({
         message,
         clientSessionId,
         ...(conversationId ? { conversationId } : {}),
+        ...(trimmedClientNickname
+          ? { clientNickname: trimmedClientNickname.slice(0, 80) }
+          : {}),
       }),
     },
   );

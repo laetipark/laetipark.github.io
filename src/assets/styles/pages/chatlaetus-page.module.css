@@ -154,10 +154,18 @@
   font-weight: 900;
 }
 
+.nicknameField,
+.messageField {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nicknameInput,
 .textarea {
   width: 100%;
   min-width: 0;
-  resize: vertical;
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 12px;
@@ -166,13 +174,29 @@
   line-height: 1.55;
 }
 
+.nicknameInput {
+  height: 48px;
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.nicknameInput::placeholder,
 .textarea::placeholder {
   color: var(--text-muted);
 }
 
+.nicknameInput:disabled,
 .textarea:disabled {
   cursor: not-allowed;
   opacity: 0.7;
+}
+
+.nicknameInput:focus-visible,
+.textarea:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--brand), transparent 58%);
+  outline-offset: 3px;
 }
 
 .sendButton {
@@ -197,11 +221,7 @@
 
 @media (min-width: 768px) {
   .form {
-    grid-template-columns: minmax(0, 1fr) 104px;
+    grid-template-columns: minmax(148px, 220px) minmax(0, 1fr) 104px;
     align-items: end;
-  }
-
-  .inputLabel {
-    grid-column: 1 / -1;
   }
 }
