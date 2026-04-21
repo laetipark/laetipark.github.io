@@ -119,8 +119,8 @@ export const ChatlaetusPage = ({ onNavigateHome }: ChatlaetusPageProps) => {
 
         {!isConfigured && (
           <div className={styles.notice} role={'status'}>
-            GitHub Actions secret 또는 로컬 환경 변수에 VITE_API_URL을 설정하면
-            채팅을 사용할 수 있습니다.
+            GitHub Actions secret 또는 로컬 환경 변수에 VITE_API_BASE_URL을
+            설정하면 채팅을 사용할 수 있습니다.
           </div>
         )}
 
@@ -174,7 +174,7 @@ export const ChatlaetusPage = ({ onNavigateHome }: ChatlaetusPageProps) => {
               placeholder={
                 isConfigured
                   ? '프로젝트, 기술 스택, 경험에 대해 질문해보세요.'
-                  : 'VITE_API_URL 설정이 필요합니다.'
+                  : 'VITE_API_BASE_URL 설정이 필요합니다.'
               }
               disabled={!isConfigured || isSending}
               onChange={(event) => setInput(event.target.value)}

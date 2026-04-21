@@ -10,7 +10,7 @@
 
 - `main` 브랜치 push 또는 수동 실행으로 배포한다.
 - 빌드에는 `npm ci`와 `npm run build`를 사용한다.
-- `VITE_API_URL`은 GitHub Actions secret에서 빌드 환경 변수로 주입한다.
+- `VITE_API_BASE_URL`은 GitHub Actions secret에서 빌드 환경 변수로 주입한다.
 - GitHub Pages의 Build and deployment Source는 `GitHub Actions`로 설정한다.
 - `Deploy from a branch`의 `main / root`는 Vite 소스 `index.html`을 그대로 서빙하므로 사용하지 않는다.
 

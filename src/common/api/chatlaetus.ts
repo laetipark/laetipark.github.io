@@ -8,7 +8,7 @@ type SendChatMessageParams = {
   history: ChatMessage[];
 };
 
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 const chatEndpoint = '/api/chatlaetus';
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -61,6 +61,16 @@ const extractErrorMessage = (body: unknown): string | null => {
 
 const normalizeApiUrl = (value: string): string => value.replace(/\/+$/, '');
 
+const getChatlaetusApiBaseUrl = (): string | null => {
+  if (typeof apiBaseUrl !== 'string') {
+    return null;
+  }
+
+  const trimmedApiBaseUrl = apiBaseUrl.trim();
+
+  return trimmedApiBaseUrl.length > 0 ? trimmedApiBaseUrl : null;
+};
+
 const readResponseBody = async (response: Response): Promise<unknown> => {
   const text = await response.text();
 
@@ -76,23 +86,28 @@ const readResponseBody = async (response: Response): Promise<unknown> => {
 };
 
 export const hasChatlaetusApiUrl = (): boolean =>
-  typeof apiUrl === 'string' && apiUrl.trim().length > 0;
+  getChatlaetusApiBaseUrl() !== null;
 
 export const sendChatlaetusMessage = async ({
   message,
   history,
 }: SendChatMessageParams): Promise<string> => {
-  if (!hasChatlaetusApiUrl()) {
-    throw new Error('VITE_API_URL이 설정되지 않았습니다.');
+  const configuredApiBaseUrl = getChatlaetusApiBaseUrl();
+
+  if (!configuredApiBaseUrl) {
+    throw new Error('VITE_API_BASE_URL이 설정되지 않았습니다.');
   }
 
-  const response = await fetch(`${normalizeApiUrl(apiUrl)}${chatEndpoint}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+  const response = await fetch(
+    `${normalizeApiUrl(configuredApiBaseUrl)}${chatEndpoint}`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message, history }),
     },
-    body: JSON.stringify({ message, history }),
-  });
+  );
   const body = await readResponseBody(response);
 
   if (!response.ok) {
