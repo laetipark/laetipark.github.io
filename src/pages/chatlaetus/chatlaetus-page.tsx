@@ -21,7 +21,7 @@ const initialMessages: ChatMessage[] = [
   {
     role: 'assistant',
     content:
-      '안녕하세요. 포트폴리오와 프로젝트에 대해 궁금한 점을 편하게 물어보세요.',
+      '안녕하세요. 채팅 내용은 저장됩니다.',
   },
 ];
 
