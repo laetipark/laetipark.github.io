@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 
 import {
   faArrowLeft,
@@ -92,6 +92,15 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
     } finally {
       setIsSending(false);
     }
+  };
+
+  const handleInputKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key !== 'Enter' || event.shiftKey || event.nativeEvent.isComposing) {
+      return;
+    }
+
+    event.preventDefault();
+    event.currentTarget.form?.requestSubmit();
   };
 
   const resetChat = () => {
@@ -190,6 +199,7 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
               }
               disabled={!isConfigured || isSending}
               onChange={(event) => setInput(event.target.value)}
+              onKeyDown={handleInputKeyDown}
             />
             <button
               className={styles.sendButton}
