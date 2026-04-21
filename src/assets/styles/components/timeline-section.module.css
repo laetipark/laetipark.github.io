@@ -1,0 +1,39 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-bg);
+  box-shadow: var(--shadow-soft);
+}
+
+.itemTitle {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  color: var(--brand-dark);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.icon {
+  width: 16px;
+  min-width: 16px;
+  margin-top: 5px;
+}
+
+.lineList {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-left: 22px;
+}

@@ -1,59 +1,70 @@
-import { faGithubSquare } from '@fortawesome/free-brands-svg-icons';
-import {
-  faEnvelopeSquare,
-  faRssSquare,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { Summary } from './component/summary/summary.tsx';
-import { Project } from './component/project/project.tsx';
-import Education from './component/education/education.tsx';
-import Experience from './component/experience/experience.tsx';
+import { activities, educationItems } from './common/data/portfolio';
+import { ThemeToggle } from './components/common/theme-toggle';
+import { AppShell } from './components/layout/app-shell';
+import { ProfileHero } from './components/profile/profile-hero';
+import { ProjectSection } from './components/projects/project-section';
+import { SkillSection } from './components/skills/skill-section';
+import { SummarySection } from './components/summary/summary-section';
+import { TimelineSection } from './components/timeline/timeline-section';
+import { ChatlaetusPage } from './pages/chatlaetus/chatlaetus-page';
 
-import './app.css';
-import Skill from './component/skill/skill.tsx';
+type AppRoute = 'portfolio' | 'chatlaetus';
+type RoutePath = '/' | '/chatlaetus';
 
-function App() {
+const routeFromPath = (pathname: string): AppRoute => {
+  const normalizedPath = pathname.replace(/\/+$/, '') || '/';
+
+  return normalizedPath === '/chatlaetus' ? 'chatlaetus' : 'portfolio';
+};
+
+const PortfolioPage = ({ onOpenChat }: { onOpenChat: () => void }) => {
   return (
-    <React.Fragment>
-      <div className={'title'}>
-        <h1>
-          <span>박동훈 🙂</span>
-        </h1>
-        <div>
-          <span>
-            <FontAwesomeIcon icon={faEnvelopeSquare} width={16} fontSize={16} />{' '}
-            이메일:
-          </span>
-          <a href={'mailto:creator98@naver.com'}>creator98@naver.com</a>
-        </div>
-        <div>
-          <span>
-            <FontAwesomeIcon icon={faGithubSquare} width={16} fontSize={16} />{' '}
-            깃허브:
-          </span>
-          <a href={'https://github.com/laetipark'} target={'_blank'}>
-            github.com/laetipark
-          </a>
-        </div>
-        <div>
-          <span>
-            <FontAwesomeIcon icon={faRssSquare} width={16} fontSize={16} />{' '}
-            블로그:
-          </span>
-          <a href={'https://blex.me/@laetipark'} target={'_blank'}>
-            blex.me/@laetipark
-          </a>
-        </div>
-      </div>
-      <Summary />
-      <Project />
-      <Skill />
-      <Education />
-      <Experience />
-    </React.Fragment>
+    <AppShell>
+      <ProfileHero onOpenChat={onOpenChat} />
+      <SummarySection />
+      <ProjectSection />
+      <SkillSection />
+      <TimelineSection title={'학력'} items={educationItems} />
+      <TimelineSection title={'자격증 및 기타 활동'} items={activities} />
+    </AppShell>
   );
-}
+};
+
+const App = () => {
+  const [route, setRoute] = useState<AppRoute>(() =>
+    routeFromPath(window.location.pathname),
+  );
+
+  useEffect(() => {
+    const handlePopState = () =>
+      setRoute(routeFromPath(window.location.pathname));
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const navigate = useCallback((path: RoutePath) => {
+    if (window.location.pathname !== path) {
+      window.history.pushState(null, '', path);
+    }
+
+    setRoute(routeFromPath(path));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  return (
+    <>
+      {route === 'chatlaetus' ? (
+        <ChatlaetusPage onNavigateHome={() => navigate('/')} />
+      ) : (
+        <PortfolioPage onOpenChat={() => navigate('/chatlaetus')} />
+      )}
+      <ThemeToggle />
+    </>
+  );
+};
 
 export default App;

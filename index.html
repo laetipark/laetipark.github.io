@@ -1,10 +1,35 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/esLaetus.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>박동훈 (DongHun Park)</title>
+    <script>
+      (() => {
+        const redirectKey = 'laetipark.redirect';
+        const themeKey = 'laetipark.theme';
+        const pendingRedirect = window.sessionStorage.getItem(redirectKey);
+
+        if (pendingRedirect) {
+          window.sessionStorage.removeItem(redirectKey);
+          window.history.replaceState(null, '', pendingRedirect);
+        }
+
+        const storedTheme = window.localStorage.getItem(themeKey);
+        const prefersDark = window.matchMedia(
+          '(prefers-color-scheme: dark)',
+        ).matches;
+        const theme =
+          storedTheme === 'light' || storedTheme === 'dark'
+            ? storedTheme
+            : prefersDark
+              ? 'dark'
+              : 'light';
+
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

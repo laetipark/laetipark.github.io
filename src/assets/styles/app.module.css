@@ -1,0 +1,17 @@
+.app {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  width: min(100% - 32px, 924px);
+  min-width: 0;
+  gap: 24px;
+  margin: 0 auto;
+  padding: 22px 0 88px;
+}
+
+@media (min-width: 1024px) {
+  .app {
+    width: min(100% - 56px, 1040px);
+    padding: 34px 0 96px;
+  }
+}

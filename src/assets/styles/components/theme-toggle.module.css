@@ -1,0 +1,37 @@
+.toggle {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  color: var(--button-primary-text);
+  background: var(--button-primary-bg);
+  box-shadow: var(--shadow-floating);
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.toggle:hover {
+  transform: translateY(-2px);
+  background: var(--button-primary-hover-bg);
+}
+
+.toggle:active {
+  transform: translateY(0);
+}
+
+@media (min-width: 768px) {
+  .toggle {
+    right: 24px;
+    bottom: 24px;
+  }
+}

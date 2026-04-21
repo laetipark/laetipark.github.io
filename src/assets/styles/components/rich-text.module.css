@@ -1,0 +1,21 @@
+.line {
+  display: inline;
+}
+
+.mark {
+  display: inline;
+  padding: 0 4px;
+  border-radius: 4px;
+  color: var(--mark-text);
+  background: var(--mark-bg);
+  font-weight: 800;
+}
+
+.accent {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.link {
+  display: inline;
+}
