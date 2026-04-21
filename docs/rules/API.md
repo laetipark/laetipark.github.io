@@ -8,7 +8,7 @@
 
 ## ChatLaetus
 
-- 기본 엔드포인트는 `POST ${apiBaseUrl}/api/chatlaetus`이다.
+- 기본 엔드포인트는 `POST ${apiBaseUrl}/chatlaetus`이다.
 - 요청 body는 아래 형태를 사용한다.
 
 ```json
