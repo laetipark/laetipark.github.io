@@ -1,15 +1,23 @@
 export type ChatMessage = {
+  id?: string;
   role: 'user' | 'assistant';
   content: string;
+  createdAt?: string;
 };
 
 type SendChatMessageParams = {
   message: string;
-  history: ChatMessage[];
+  conversationId: string | null;
+  clientSessionId: string;
+};
+
+type SendChatMessageResult = {
+  conversationId: string | null;
+  message: ChatMessage;
 };
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-const chatEndpoint = '/chatlaetus';
+const chatEndpoint = '/chatlaetus/messages';
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -24,6 +32,41 @@ const readString = (value: unknown, key: string): string | null => {
   return typeof field === 'string' && field.trim() ? field : null;
 };
 
+const readMessageText = (value: unknown, key: string): string | null => {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  const field = value[key];
+
+  if (typeof field === 'string' && field.trim()) {
+    return field;
+  }
+
+  if (Array.isArray(field)) {
+    const messages = field.filter(
+      (item): item is string => typeof item === 'string' && item.trim().length > 0,
+    );
+
+    return messages.length > 0 ? messages.join('\n') : null;
+  }
+
+  return null;
+};
+
+const readRecord = (
+  value: unknown,
+  key: string,
+): Record<string, unknown> | null => {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  const field = value[key];
+
+  return isRecord(field) ? field : null;
+};
+
 const extractReply = (body: unknown): string | null => {
   const directReply =
     readString(body, 'reply') ??
@@ -35,6 +78,12 @@ const extractReply = (body: unknown): string | null => {
   }
 
   if (isRecord(body)) {
+    const nestedMessageReply = extractReply(body.message);
+
+    if (nestedMessageReply) {
+      return nestedMessageReply;
+    }
+
     return extractReply(body.data);
   }
 
@@ -42,7 +91,7 @@ const extractReply = (body: unknown): string | null => {
 };
 
 const extractErrorMessage = (body: unknown): string | null => {
-  const directError = readString(body, 'message');
+  const directError = readMessageText(body, 'message') ?? readString(body, 'error');
 
   if (directError) {
     return directError;
@@ -59,9 +108,51 @@ const extractErrorMessage = (body: unknown): string | null => {
   return null;
 };
 
+const extractConversationId = (body: unknown): string | null => {
+  const conversationId = readString(body, 'conversationId');
+
+  if (conversationId) {
+    return conversationId;
+  }
+
+  if (isRecord(body)) {
+    return extractConversationId(body.data);
+  }
+
+  return null;
+};
+
+const readMessageRecord = (body: unknown): Record<string, unknown> | null => {
+  const directMessage = readRecord(body, 'message');
+
+  if (directMessage) {
+    return directMessage;
+  }
+
+  const data = readRecord(body, 'data');
+
+  if (!data) {
+    return null;
+  }
+
+  return readRecord(data, 'message') ?? data;
+};
+
+const toChatMessage = (body: unknown, content: string): ChatMessage => {
+  const messageBody = readMessageRecord(body);
+  const role = readString(messageBody, 'role');
+
+  return {
+    id: readString(messageBody, 'id') ?? undefined,
+    role: role === 'user' ? 'user' : 'assistant',
+    content,
+    createdAt: readString(messageBody, 'createdAt') ?? undefined,
+  };
+};
+
 const normalizeApiUrl = (value: string): string => value.replace(/\/+$/, '');
 
-const getChatlaetusApiBaseUrl = (): string | null => {
+const getChatLaetusApiBaseUrl = (): string | null => {
   if (typeof apiBaseUrl !== 'string') {
     return null;
   }
@@ -85,14 +176,15 @@ const readResponseBody = async (response: Response): Promise<unknown> => {
   }
 };
 
-export const hasChatlaetusApiUrl = (): boolean =>
-  getChatlaetusApiBaseUrl() !== null;
+export const hasChatLaetusApiUrl = (): boolean =>
+  getChatLaetusApiBaseUrl() !== null;
 
-export const sendChatlaetusMessage = async ({
+export const sendChatLaetusMessage = async ({
   message,
-  history,
-}: SendChatMessageParams): Promise<string> => {
-  const configuredApiBaseUrl = getChatlaetusApiBaseUrl();
+  conversationId,
+  clientSessionId,
+}: SendChatMessageParams): Promise<SendChatMessageResult> => {
+  const configuredApiBaseUrl = getChatLaetusApiBaseUrl();
 
   if (!configuredApiBaseUrl) {
     throw new Error('VITE_API_BASE_URL이 설정되지 않았습니다.');
@@ -105,7 +197,11 @@ export const sendChatlaetusMessage = async ({
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message, history }),
+      body: JSON.stringify({
+        message,
+        clientSessionId,
+        ...(conversationId ? { conversationId } : {}),
+      }),
     },
   );
   const body = await readResponseBody(response);
@@ -123,5 +219,8 @@ export const sendChatlaetusMessage = async ({
     throw new Error('ChatLaetus 응답에서 메시지를 찾을 수 없습니다.');
   }
 
-  return reply;
+  return {
+    conversationId: extractConversationId(body) ?? conversationId,
+    message: toChatMessage(body, reply),
+  };
 };

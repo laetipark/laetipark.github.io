@@ -9,8 +9,8 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import {
-  hasChatlaetusApiUrl,
-  sendChatlaetusMessage,
+  hasChatLaetusApiUrl,
+  sendChatLaetusMessage,
 } from '../../common/api/chatlaetus';
 import type { ChatMessage } from '../../common/api/chatlaetus';
 import { AppShell } from '../../components/layout/app-shell';
@@ -25,17 +25,27 @@ const initialMessages: ChatMessage[] = [
   },
 ];
 
-type ChatlaetusPageProps = {
+const createClientSessionId = (): string => {
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+    return crypto.randomUUID();
+  }
+
+  return `chatlaetus-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+};
+
+type ChatLaetusPageProps = {
   onNavigateHome: () => void;
 };
 
-export const ChatlaetusPage = ({ onNavigateHome }: ChatlaetusPageProps) => {
+export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [clientSessionId] = useState(createClientSessionId);
   const [input, setInput] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
   const listEndRef = useRef<HTMLDivElement | null>(null);
-  const isConfigured = hasChatlaetusApiUrl();
+  const isConfigured = hasChatLaetusApiUrl();
   const trimmedInput = input.trim();
   const canSend = isConfigured && trimmedInput.length > 0 && !isSending;
 
@@ -54,7 +64,6 @@ export const ChatlaetusPage = ({ onNavigateHome }: ChatlaetusPageProps) => {
       role: 'user',
       content: trimmedInput,
     };
-    const history = messages;
 
     setMessages((currentMessages) => [...currentMessages, userMessage]);
     setInput('');
@@ -62,14 +71,16 @@ export const ChatlaetusPage = ({ onNavigateHome }: ChatlaetusPageProps) => {
     setIsSending(true);
 
     try {
-      const reply = await sendChatlaetusMessage({
+      const result = await sendChatLaetusMessage({
         message: userMessage.content,
-        history,
+        conversationId,
+        clientSessionId,
       });
 
+      setConversationId(result.conversationId);
       setMessages((currentMessages) => [
         ...currentMessages,
-        { role: 'assistant', content: reply },
+        result.message,
       ]);
     } catch (sendError) {
       const message =
@@ -85,6 +96,7 @@ export const ChatlaetusPage = ({ onNavigateHome }: ChatlaetusPageProps) => {
 
   const resetChat = () => {
     setMessages(initialMessages);
+    setConversationId(null);
     setError(null);
     setInput('');
   };

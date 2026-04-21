@@ -8,7 +8,7 @@ import { ProjectSection } from './components/projects/project-section';
 import { SkillSection } from './components/skills/skill-section';
 import { SummarySection } from './components/summary/summary-section';
 import { TimelineSection } from './components/timeline/timeline-section';
-import { ChatlaetusPage } from './pages/chatlaetus/chatlaetus-page';
+import { ChatLaetusPage } from './pages/chatlaetus/chatlaetus-page';
 
 type AppRoute = 'portfolio' | 'chatlaetus';
 type RoutePath = '/' | '/chatlaetus';
@@ -58,7 +58,7 @@ const App = () => {
   return (
     <>
       {route === 'chatlaetus' ? (
-        <ChatlaetusPage onNavigateHome={() => navigate('/')} />
+        <ChatLaetusPage onNavigateHome={() => navigate('/')} />
       ) : (
         <PortfolioPage onOpenChat={() => navigate('/chatlaetus')} />
       )}
