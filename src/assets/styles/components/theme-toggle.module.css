@@ -35,3 +35,9 @@
     bottom: 24px;
   }
 }
+
+@media (max-width: 767px) {
+  .chatOffset {
+    bottom: calc(334px + env(safe-area-inset-bottom));
+  }
+}

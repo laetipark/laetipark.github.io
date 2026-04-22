@@ -62,7 +62,7 @@ const App = () => {
       ) : (
         <PortfolioPage onOpenChat={() => navigate('/chatlaetus')} />
       )}
-      <ThemeToggle />
+      <ThemeToggle isChatOffset={route === 'chatlaetus'} />
     </>
   );
 };

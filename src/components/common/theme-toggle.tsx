@@ -6,6 +6,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from '../../assets/styles/components/theme-toggle.module.css';
 
 type ThemeMode = 'light' | 'dark';
+type ThemeToggleProps = {
+  isChatOffset?: boolean;
+};
 
 const STORAGE_KEY = 'laetipark.theme';
 
@@ -21,7 +24,7 @@ const readPreferredTheme = (): ThemeMode => {
     : 'light';
 };
 
-export const ThemeToggle = () => {
+export const ThemeToggle = ({ isChatOffset = false }: ThemeToggleProps) => {
   const [theme, setTheme] = useState<ThemeMode>(readPreferredTheme);
   const isDark = theme === 'dark';
 
@@ -32,7 +35,7 @@ export const ThemeToggle = () => {
 
   return (
     <button
-      className={styles.toggle}
+      className={`${styles.toggle} ${isChatOffset ? styles.chatOffset : ''}`}
       type={'button'}
       aria-label={isDark ? '라이트 모드로 전환' : '다크 모드로 전환'}
       title={isDark ? '라이트 모드' : '다크 모드'}

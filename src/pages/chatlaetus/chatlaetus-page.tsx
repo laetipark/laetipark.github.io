@@ -26,7 +26,21 @@ const initialMessages: ChatMessage[] = [
 ];
 
 const clientNicknameStorageKey = 'chatlaetus-client-nickname';
+const lastConversationStorageKey = 'chatlaetus-last-conversation-v1';
 const clientNicknameMaxLength = 80;
+
+type StoredConversationSnapshot = {
+  conversationId: string | null;
+  clientSessionId: string;
+  messages: ChatMessage[];
+  updatedAt: string;
+};
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const createInitialMessages = (): ChatMessage[] =>
+  initialMessages.map((message) => ({ ...message }));
 
 const createClientSessionId = (): string => {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
@@ -34,6 +48,126 @@ const createClientSessionId = (): string => {
   }
 
   return `chatlaetus-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+};
+
+const toStoredChatMessage = (value: unknown): ChatMessage | null => {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  const { role, content, id, createdAt } = value;
+
+  if (
+    (role !== 'user' && role !== 'assistant') ||
+    typeof content !== 'string' ||
+    !content.trim()
+  ) {
+    return null;
+  }
+
+  return {
+    role,
+    content,
+    id: typeof id === 'string' && id.trim() ? id : undefined,
+    createdAt:
+      typeof createdAt === 'string' && createdAt.trim() ? createdAt : undefined,
+  };
+};
+
+const readStoredConversationSnapshot =
+  (): StoredConversationSnapshot | null => {
+    if (typeof window === 'undefined') {
+      return null;
+    }
+
+    try {
+      const storedValue = window.localStorage.getItem(
+        lastConversationStorageKey,
+      );
+
+      if (!storedValue) {
+        return null;
+      }
+
+      const parsedValue = JSON.parse(storedValue) as unknown;
+
+      if (!isRecord(parsedValue)) {
+        return null;
+      }
+
+      const { conversationId, clientSessionId, messages, updatedAt } =
+        parsedValue;
+
+      if (typeof clientSessionId !== 'string' || !clientSessionId.trim()) {
+        return null;
+      }
+
+      if (!Array.isArray(messages)) {
+        return null;
+      }
+
+      const storedMessages = messages
+        .map(toStoredChatMessage)
+        .filter((message): message is ChatMessage => message !== null);
+
+      if (
+        storedMessages.length === 0 ||
+        !storedMessages.some((message) => message.role === 'user')
+      ) {
+        return null;
+      }
+
+      return {
+        conversationId:
+          typeof conversationId === 'string' && conversationId.trim()
+            ? conversationId
+            : null,
+        clientSessionId,
+        messages: storedMessages,
+        updatedAt:
+          typeof updatedAt === 'string' && updatedAt.trim() ? updatedAt : '',
+      };
+    } catch {
+      return null;
+    }
+  };
+
+const writeStoredConversationSnapshot = ({
+  conversationId,
+  clientSessionId,
+  messages,
+}: Omit<StoredConversationSnapshot, 'updatedAt'>) => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    const snapshot: StoredConversationSnapshot = {
+      conversationId,
+      clientSessionId,
+      messages,
+      updatedAt: new Date().toISOString(),
+    };
+
+    window.localStorage.setItem(
+      lastConversationStorageKey,
+      JSON.stringify(snapshot),
+    );
+  } catch {
+    // Storage can be unavailable in restricted browsing contexts.
+  }
+};
+
+const clearStoredConversationSnapshot = () => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    window.localStorage.removeItem(lastConversationStorageKey);
+  } catch {
+    // Storage can be unavailable in restricted browsing contexts.
+  }
 };
 
 const readStoredClientNickname = (): string => {
@@ -58,9 +192,16 @@ type ChatLaetusPageProps = {
 };
 
 export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
-  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
-  const [conversationId, setConversationId] = useState<string | null>(null);
-  const [clientSessionId] = useState(createClientSessionId);
+  const [storedConversation] = useState(readStoredConversationSnapshot);
+  const [messages, setMessages] = useState<ChatMessage[]>(
+    () => storedConversation?.messages ?? createInitialMessages(),
+  );
+  const [conversationId, setConversationId] = useState<string | null>(
+    () => storedConversation?.conversationId ?? null,
+  );
+  const [clientSessionId] = useState(
+    () => storedConversation?.clientSessionId ?? createClientSessionId(),
+  );
   const [clientNickname, setClientNickname] = useState(readStoredClientNickname);
   const [input, setInput] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -73,6 +214,18 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
   useEffect(() => {
     listEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [messages, isSending]);
+
+  useEffect(() => {
+    if (!messages.some((message) => message.role === 'user')) {
+      return;
+    }
+
+    writeStoredConversationSnapshot({
+      conversationId,
+      clientSessionId,
+      messages,
+    });
+  }, [conversationId, clientSessionId, messages]);
 
   useEffect(() => {
     try {
@@ -144,7 +297,8 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
   };
 
   const resetChat = () => {
-    setMessages(initialMessages);
+    clearStoredConversationSnapshot();
+    setMessages(createInitialMessages());
     setConversationId(null);
     setError(null);
     setInput('');

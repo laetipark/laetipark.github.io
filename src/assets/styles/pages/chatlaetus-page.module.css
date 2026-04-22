@@ -1,4 +1,5 @@
 .page {
+  --chat-mobile-form-space: 326px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -217,6 +218,50 @@
 .sendButton:disabled {
   cursor: not-allowed;
   opacity: 0.55;
+}
+
+@media (max-width: 767px) {
+  .page {
+    min-height: calc(100dvh - 110px);
+    padding-bottom: calc(
+      var(--chat-mobile-form-space) + env(safe-area-inset-bottom)
+    );
+  }
+
+  .chatPanel {
+    min-height: calc(100dvh - 174px);
+    overflow: visible;
+  }
+
+  .messageList {
+    max-height: none;
+    padding-bottom: calc(
+      var(--chat-mobile-form-space) + 20px + env(safe-area-inset-bottom)
+    );
+  }
+
+  .form {
+    position: fixed;
+    right: 16px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    left: 16px;
+    z-index: 30;
+    max-height: calc(100dvh - 104px);
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: var(--shadow-floating);
+  }
+
+  .textarea {
+    min-height: 96px;
+    max-height: 132px;
+    resize: none;
+  }
+
+  .sendButton {
+    min-height: 46px;
+  }
 }
 
 @media (min-width: 768px) {
