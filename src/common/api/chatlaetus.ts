@@ -22,7 +22,7 @@ type SendChatMessageResult = {
 };
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-const chatEndpoint = '/chatlaetus/messages';
+const chatEndpoint = '/chat/messages';
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);

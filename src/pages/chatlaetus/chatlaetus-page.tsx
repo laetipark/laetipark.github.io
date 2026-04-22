@@ -2,6 +2,7 @@ import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 
 import {
   faArrowLeft,
+  faBrain,
   faCommentDots,
   faPaperPlane,
   faRotateLeft,
@@ -387,7 +388,7 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
                   <FontAwesomeIcon icon={faCommentDots} />
                   <span>
                     {enableThinking
-                      ? '깊게 검토 중입니다. 응답 시간이 더 길어질 수 있습니다.'
+                      ? '깊게 검토 중입니다.'
                       : '응답을 준비하고 있습니다.'}
                   </span>
                 </p>
@@ -426,24 +427,21 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
                 }
               />
             </div>
-            <label className={styles.thinkingToggle}>
-              <input
-                className={styles.thinkingCheckbox}
-                type={'checkbox'}
-                checked={enableThinking}
-                disabled={isSending}
-                onChange={(event) => setEnableThinking(event.target.checked)}
-              />
-              <span className={styles.thinkingSwitch} aria-hidden={'true'}>
-                <span className={styles.thinkingKnob} />
-              </span>
-              <span className={styles.thinkingText}>
-                <span className={styles.thinkingLabel}>깊게 생각하기</span>
-                <span className={styles.thinkingHint}>
-                  켜면 응답 시간이 더 길어질 수 있습니다.
-                </span>
-              </span>
-            </label>
+            <button
+              className={`${styles.thinkingButton} ${
+                enableThinking ? styles.thinkingButtonActive : ''
+              }`}
+              type={'button'}
+              aria-label={'깊게 생각하기'}
+              aria-pressed={enableThinking}
+              title={'깊게 생각하기'}
+              disabled={isSending}
+              onClick={() =>
+                setEnableThinking((currentValue) => !currentValue)
+              }
+            >
+              <FontAwesomeIcon icon={faBrain} />
+            </button>
             <div className={styles.messageField}>
               <label className={styles.inputLabel} htmlFor={'chatlaetus-input'}>
                 메시지

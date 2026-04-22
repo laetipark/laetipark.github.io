@@ -166,89 +166,42 @@
   gap: 8px;
 }
 
-.thinkingToggle {
-  display: grid;
-  grid-template-columns: 44px minmax(0, 1fr);
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-  min-height: var(--chat-control-height);
-  color: var(--text-main);
-  cursor: pointer;
-}
-
-.thinkingCheckbox {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-.thinkingSwitch {
+.thinkingButton {
   display: inline-flex;
   align-items: center;
-  width: 44px;
-  height: 26px;
-  padding: 3px;
+  justify-content: center;
+  width: var(--chat-control-height);
+  height: var(--chat-control-height);
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: 8px;
+  color: var(--text-muted);
   background: var(--surface-bg);
+  font-size: 17px;
   transition:
     border-color 160ms ease,
-    background-color 160ms ease;
-}
-
-.thinkingKnob {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--text-muted);
-  transition:
     background-color 160ms ease,
-    transform 160ms ease;
+    color 160ms ease;
 }
 
-.thinkingText {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.thinkingLabel {
-  color: var(--brand-dark);
-  font-size: 14px;
-  font-weight: 900;
-}
-
-.thinkingHint {
-  color: var(--text-muted);
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1.35;
-}
-
-.thinkingCheckbox:checked + .thinkingSwitch {
+.thinkingButton:hover:not(:disabled) {
   border-color: var(--button-primary-bg);
   background: color-mix(in srgb, var(--button-primary-bg), transparent 74%);
 }
 
-.thinkingCheckbox:checked + .thinkingSwitch .thinkingKnob {
+.thinkingButtonActive {
+  border-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
   background: var(--button-primary-bg);
-  transform: translateX(18px);
 }
 
-.thinkingCheckbox:focus-visible + .thinkingSwitch {
+.thinkingButton:focus-visible {
   outline: 3px solid color-mix(in srgb, var(--brand), transparent 58%);
   outline-offset: 3px;
 }
 
-.thinkingToggle:has(.thinkingCheckbox:disabled) {
+.thinkingButton:disabled {
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.55;
 }
 
 .nicknameInput,
@@ -341,7 +294,7 @@
   }
 
   .form {
-    grid-template-columns: minmax(148px, 200px) minmax(170px, 220px) minmax(
+    grid-template-columns: minmax(148px, 200px) var(--chat-control-height) minmax(
         0,
         1fr
       ) 104px;
