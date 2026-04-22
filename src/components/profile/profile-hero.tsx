@@ -17,14 +17,14 @@ export const ProfileHero = ({ onOpenChat }: ProfileHeroProps) => {
         <p className={styles.headline}>{profile.headline}</p>
         <a
           className={styles.chatLink}
-          href={'/chatlaetus'}
+          href={'/chat'}
           onClick={(event) => {
             event.preventDefault();
             onOpenChat();
           }}
         >
           <FontAwesomeIcon icon={faCommentDots} />
-          <span>ChatLaetus</span>
+          <span>Chat Laetus</span>
         </a>
       </div>
       <address className={styles.contacts}>

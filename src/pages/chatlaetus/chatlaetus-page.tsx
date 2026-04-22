@@ -42,6 +42,23 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 const createInitialMessages = (): ChatMessage[] =>
   initialMessages.map((message) => ({ ...message }));
 
+const getVisibleMessages = (messages: ChatMessage[]): ChatMessage[] => {
+  let lastUserMessageIndex = -1;
+
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    if (messages[index].role === 'user') {
+      lastUserMessageIndex = index;
+      break;
+    }
+  }
+
+  if (lastUserMessageIndex === -1) {
+    return messages;
+  }
+
+  return messages.slice(lastUserMessageIndex);
+};
+
 const createClientSessionId = (): string => {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
     return crypto.randomUUID();
@@ -204,12 +221,14 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
   );
   const [clientNickname, setClientNickname] = useState(readStoredClientNickname);
   const [input, setInput] = useState('');
+  const [enableThinking, setEnableThinking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
   const listEndRef = useRef<HTMLDivElement | null>(null);
   const isConfigured = hasChatLaetusApiUrl();
   const trimmedInput = input.trim();
   const canSend = isConfigured && trimmedInput.length > 0 && !isSending;
+  const visibleMessages = getVisibleMessages(messages);
 
   useEffect(() => {
     listEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -268,6 +287,7 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
         conversationId,
         clientSessionId,
         clientNickname,
+        enableThinking,
       });
 
       setConversationId(result.conversationId);
@@ -279,7 +299,7 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
       const message =
         sendError instanceof Error
           ? sendError.message
-          : 'ChatLaetus 요청 중 오류가 발생했습니다.';
+          : 'Chat Laetus 요청 중 오류가 발생했습니다.';
 
       setError(message);
     } finally {
@@ -302,6 +322,7 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
     setConversationId(null);
     setError(null);
     setInput('');
+    setEnableThinking(false);
   };
 
   return (
@@ -319,7 +340,7 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
           <div className={styles.titleGroup}>
             <p className={styles.eyebrow}>Laetipark assistant</p>
             <h1 className={styles.title} id={'chatlaetus-title'}>
-              ChatLaetus
+              Chat Laetus
             </h1>
           </div>
           <button
@@ -341,7 +362,7 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
 
         <div className={styles.chatPanel}>
           <div className={styles.messageList} aria-live={'polite'}>
-            {messages.map((message, index) => (
+            {visibleMessages.map((message, index) => (
               <article
                 className={`${styles.message} ${
                   message.role === 'user'
@@ -364,7 +385,11 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
                 <span className={styles.messageRole}>Laetus</span>
                 <p className={styles.typing}>
                   <FontAwesomeIcon icon={faCommentDots} />
-                  <span>응답을 준비하고 있습니다.</span>
+                  <span>
+                    {enableThinking
+                      ? '깊게 검토 중입니다. 응답 시간이 더 길어질 수 있습니다.'
+                      : '응답을 준비하고 있습니다.'}
+                  </span>
                 </p>
               </article>
             )}
@@ -401,6 +426,24 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
                 }
               />
             </div>
+            <label className={styles.thinkingToggle}>
+              <input
+                className={styles.thinkingCheckbox}
+                type={'checkbox'}
+                checked={enableThinking}
+                disabled={isSending}
+                onChange={(event) => setEnableThinking(event.target.checked)}
+              />
+              <span className={styles.thinkingSwitch} aria-hidden={'true'}>
+                <span className={styles.thinkingKnob} />
+              </span>
+              <span className={styles.thinkingText}>
+                <span className={styles.thinkingLabel}>깊게 생각하기</span>
+                <span className={styles.thinkingHint}>
+                  켜면 응답 시간이 더 길어질 수 있습니다.
+                </span>
+              </span>
+            </label>
             <div className={styles.messageField}>
               <label className={styles.inputLabel} htmlFor={'chatlaetus-input'}>
                 메시지
@@ -409,11 +452,11 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
                 className={styles.textarea}
                 id={'chatlaetus-input'}
                 value={input}
-                rows={3}
+                rows={1}
                 placeholder={
                   isConfigured
-                    ? '프로젝트, 기술 스택, 경험에 대해 질문해보세요.'
-                    : 'VITE_API_BASE_URL 설정이 필요합니다.'
+                    ? '질문을 입력하세요.'
+                    : 'API 설정이 필요합니다.'
                 }
                 disabled={!isConfigured || isSending}
                 onChange={(event) => setInput(event.target.value)}

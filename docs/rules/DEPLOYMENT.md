@@ -16,5 +16,5 @@
 
 ## GitHub Pages Routing
 
-- `/chatlaetus` 직접 접근을 지원하기 위해 `public/404.html`에서 원래 path를 sessionStorage에 저장한 뒤 `/`로 되돌린다.
+- `/chat` 직접 접근을 지원하기 위해 `public/404.html`에서 원래 path를 sessionStorage에 저장한 뒤 `/`로 되돌린다.
 - `index.html`은 저장된 redirect path를 읽어 `history.replaceState`로 복구한다.

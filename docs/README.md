@@ -14,7 +14,7 @@
 - `docs/rules/DESIGN.md`
   - 기존 포트폴리오 톤을 유지하는 파스텔 라이트/다크 디자인 기준
 - `docs/rules/API.md`
-  - `VITE_API_BASE_URL`과 ChatLaetus API 연결 계약
+  - `VITE_API_BASE_URL`과 Chat Laetus API 연결 계약
 - `docs/rules/DEPLOYMENT.md`
   - GitHub Pages와 GitHub Actions 배포 기준
 

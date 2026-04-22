@@ -10,6 +10,10 @@ type SendChatMessageParams = {
   conversationId: string | null;
   clientSessionId: string;
   clientNickname?: string;
+  enableThinking?: boolean;
+  temperature?: number;
+  topP?: number;
+  maxTokens?: number;
 };
 
 type SendChatMessageResult = {
@@ -153,6 +157,9 @@ const toChatMessage = (body: unknown, content: string): ChatMessage => {
 
 const normalizeApiUrl = (value: string): string => value.replace(/\/+$/, '');
 
+const isFiniteNumber = (value: unknown): value is number =>
+  typeof value === 'number' && Number.isFinite(value);
+
 const getChatLaetusApiBaseUrl = (): string | null => {
   if (typeof apiBaseUrl !== 'string') {
     return null;
@@ -185,6 +192,10 @@ export const sendChatLaetusMessage = async ({
   conversationId,
   clientSessionId,
   clientNickname,
+  enableThinking = false,
+  temperature,
+  topP,
+  maxTokens,
 }: SendChatMessageParams): Promise<SendChatMessageResult> => {
   const configuredApiBaseUrl = getChatLaetusApiBaseUrl();
 
@@ -208,6 +219,10 @@ export const sendChatLaetusMessage = async ({
         ...(trimmedClientNickname
           ? { clientNickname: trimmedClientNickname.slice(0, 80) }
           : {}),
+        ...(enableThinking ? { enableThinking: true } : {}),
+        ...(isFiniteNumber(temperature) ? { temperature } : {}),
+        ...(isFiniteNumber(topP) ? { topP } : {}),
+        ...(isFiniteNumber(maxTokens) ? { maxTokens } : {}),
       }),
     },
   );
@@ -216,14 +231,14 @@ export const sendChatLaetusMessage = async ({
   if (!response.ok) {
     throw new Error(
       extractErrorMessage(body) ??
-        `ChatLaetus 요청에 실패했습니다. (${response.status})`,
+        `Chat Laetus 요청에 실패했습니다. (${response.status})`,
     );
   }
 
   const reply = extractReply(body);
 
   if (!reply) {
-    throw new Error('ChatLaetus 응답에서 메시지를 찾을 수 없습니다.');
+    throw new Error('Chat Laetus 응답에서 메시지를 찾을 수 없습니다.');
   }
 
   return {

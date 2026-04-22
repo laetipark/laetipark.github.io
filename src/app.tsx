@@ -10,13 +10,18 @@ import { SummarySection } from './components/summary/summary-section';
 import { TimelineSection } from './components/timeline/timeline-section';
 import { ChatLaetusPage } from './pages/chatlaetus/chatlaetus-page';
 
-type AppRoute = 'portfolio' | 'chatlaetus';
-type RoutePath = '/' | '/chatlaetus';
+type AppRoute = 'portfolio' | 'chat';
+type RoutePath = '/' | '/chat';
+
+const chatPath = '/chat';
+const legacyChatPath = '/chatlaetus';
 
 const routeFromPath = (pathname: string): AppRoute => {
   const normalizedPath = pathname.replace(/\/+$/, '') || '/';
 
-  return normalizedPath === '/chatlaetus' ? 'chatlaetus' : 'portfolio';
+  return normalizedPath === chatPath || normalizedPath === legacyChatPath
+    ? 'chat'
+    : 'portfolio';
 };
 
 const PortfolioPage = ({ onOpenChat }: { onOpenChat: () => void }) => {
@@ -46,6 +51,20 @@ const App = () => {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  useEffect(() => {
+    const normalizedPath = window.location.pathname.replace(/\/+$/, '') || '/';
+
+    if (normalizedPath !== legacyChatPath) {
+      return;
+    }
+
+    window.history.replaceState(
+      null,
+      '',
+      `${chatPath}${window.location.search}${window.location.hash}`,
+    );
+  }, []);
+
   const navigate = useCallback((path: RoutePath) => {
     if (window.location.pathname !== path) {
       window.history.pushState(null, '', path);
@@ -57,12 +76,12 @@ const App = () => {
 
   return (
     <>
-      {route === 'chatlaetus' ? (
+      {route === 'chat' ? (
         <ChatLaetusPage onNavigateHome={() => navigate('/')} />
       ) : (
-        <PortfolioPage onOpenChat={() => navigate('/chatlaetus')} />
+        <PortfolioPage onOpenChat={() => navigate(chatPath)} />
       )}
-      <ThemeToggle isChatOffset={route === 'chatlaetus'} />
+      <ThemeToggle isChatOffset={route === 'chat'} />
     </>
   );
 };

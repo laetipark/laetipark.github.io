@@ -1,8 +1,9 @@
 .page {
-  --chat-mobile-form-space: 326px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  height: calc(100dvh - 110px);
+  min-height: 0;
 }
 
 .header {
@@ -77,8 +78,9 @@
 
 .chatPanel {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
-  min-height: min(680px, calc(100vh - 190px));
+  min-height: 0;
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -91,8 +93,7 @@
   flex: 1 1 auto;
   flex-direction: column;
   gap: 12px;
-  min-height: 360px;
-  max-height: calc(100vh - 310px);
+  min-height: 0;
   overflow: auto;
   padding: 16px;
 }
@@ -141,7 +142,9 @@
 }
 
 .form {
+  --chat-control-height: 48px;
   display: grid;
+  flex: 0 0 auto;
   grid-template-columns: 1fr;
   gap: 10px;
   padding: 14px;
@@ -163,9 +166,95 @@
   gap: 8px;
 }
 
+.thinkingToggle {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  min-height: var(--chat-control-height);
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.thinkingCheckbox {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.thinkingSwitch {
+  display: inline-flex;
+  align-items: center;
+  width: 44px;
+  height: 26px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-bg);
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease;
+}
+
+.thinkingKnob {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.thinkingText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.thinkingLabel {
+  color: var(--brand-dark);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.thinkingHint {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.thinkingCheckbox:checked + .thinkingSwitch {
+  border-color: var(--button-primary-bg);
+  background: color-mix(in srgb, var(--button-primary-bg), transparent 74%);
+}
+
+.thinkingCheckbox:checked + .thinkingSwitch .thinkingKnob {
+  background: var(--button-primary-bg);
+  transform: translateX(18px);
+}
+
+.thinkingCheckbox:focus-visible + .thinkingSwitch {
+  outline: 3px solid color-mix(in srgb, var(--brand), transparent 58%);
+  outline-offset: 3px;
+}
+
+.thinkingToggle:has(.thinkingCheckbox:disabled) {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
 .nicknameInput,
 .textarea {
   width: 100%;
+  height: var(--chat-control-height);
   min-width: 0;
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -175,12 +264,8 @@
   line-height: 1.55;
 }
 
-.nicknameInput {
-  height: 48px;
-}
-
 .textarea {
-  resize: vertical;
+  resize: none;
 }
 
 .nicknameInput::placeholder,
@@ -202,7 +287,7 @@
 
 .sendButton {
   gap: 8px;
-  min-height: 44px;
+  min-height: var(--chat-control-height);
   padding: 0 16px;
   border-color: var(--button-primary-bg);
   border-radius: 8px;
@@ -222,51 +307,50 @@
 
 @media (max-width: 767px) {
   .page {
-    min-height: calc(100dvh - 110px);
-    padding-bottom: calc(
-      var(--chat-mobile-form-space) + env(safe-area-inset-bottom)
-    );
+    gap: 12px;
   }
 
-  .chatPanel {
-    min-height: calc(100dvh - 174px);
-    overflow: visible;
+  .header {
+    grid-template-columns: 40px minmax(0, 1fr) 40px;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .title {
+    font-size: 24px;
   }
 
   .messageList {
-    max-height: none;
-    padding-bottom: calc(
-      var(--chat-mobile-form-space) + 20px + env(safe-area-inset-bottom)
-    );
+    gap: 10px;
+    padding: 12px;
   }
 
   .form {
-    position: fixed;
-    right: 16px;
-    bottom: calc(12px + env(safe-area-inset-bottom));
-    left: 16px;
-    z-index: 30;
-    max-height: calc(100dvh - 104px);
-    overflow-y: auto;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    box-shadow: var(--shadow-floating);
-  }
-
-  .textarea {
-    min-height: 96px;
-    max-height: 132px;
-    resize: none;
+    gap: 8px;
+    padding: 12px;
   }
 
   .sendButton {
-    min-height: 46px;
+    min-height: var(--chat-control-height);
   }
 }
 
 @media (min-width: 768px) {
+  .page {
+    height: calc(100dvh - 110px);
+  }
+
   .form {
-    grid-template-columns: minmax(148px, 220px) minmax(0, 1fr) 104px;
+    grid-template-columns: minmax(148px, 200px) minmax(170px, 220px) minmax(
+        0,
+        1fr
+      ) 104px;
     align-items: end;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page {
+    height: calc(100dvh - 130px);
   }
 }

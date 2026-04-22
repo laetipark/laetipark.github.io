@@ -6,7 +6,7 @@
 - 운영 값은 GitHub Actions secret `VITE_API_BASE_URL`로 주입한다.
 - 로컬 개발자는 `.env.local`에 `VITE_API_BASE_URL=https://api.laetipark.me`처럼 설정한다.
 
-## ChatLaetus
+## Chat Laetus
 
 - 기본 엔드포인트는 `POST ${apiBaseUrl}/chatlaetus/messages`이다.
 - 요청 body는 아래 형태를 사용한다.
@@ -15,12 +15,16 @@
 {
   "message": "사용자 메시지",
   "conversationId": "기존 대화 UUID",
-  "clientSessionId": "브라우저 세션 식별자"
+  "clientSessionId": "브라우저 세션 식별자",
+  "enableThinking": true
 }
 ```
 
 - `conversationId`는 첫 메시지에는 보내지 않고, 응답으로 받은 값을 다음 메시지부터 보낸다.
 - `clientSessionId`는 선택값이지만 브라우저 세션마다 안정적으로 유지한다.
+- `enableThinking`은 선택값이다. 기본 빠른 응답에서는 보내지 않고, 사용자가 "깊게 생각하기"를 켰을 때만 `true`를 보낸다.
+- 기존 선택값인 `clientNickname`, `temperature`, `topP`, `maxTokens`는 호환성을 유지한다.
+- `model`, `topK`, `minP`, `reasoningFormat`은 프론트에서 노출하지 않고 백엔드 환경변수로만 관리한다.
 - 응답은 아래 형태를 우선 지원한다.
 
 ```json
