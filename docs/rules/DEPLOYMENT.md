@@ -1,5 +1,7 @@
 # Deployment Rules
 
+이 문서는 GitHub Pages와 GitHub Actions 배포 규칙의 정본이다.
+
 ## Target
 
 - 배포 대상은 `https://laetipark.github.io/`이다.
@@ -14,7 +16,7 @@
 - GitHub Pages의 Build and deployment Source는 `GitHub Actions`로 설정한다.
 - `Deploy from a branch`의 `main / root`는 Vite 소스 `index.html`을 그대로 서빙하므로 사용하지 않는다.
 
-## GitHub Pages Routing
+## Routing Recovery
 
 - `/chat` 직접 접근을 지원하기 위해 `public/404.html`에서 원래 path를 sessionStorage에 저장한 뒤 `/`로 되돌린다.
 - `index.html`은 저장된 redirect path를 읽어 `history.replaceState`로 복구한다.
