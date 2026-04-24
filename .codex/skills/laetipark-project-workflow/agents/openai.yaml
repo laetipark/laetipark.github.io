@@ -1,0 +1,4 @@
+interface:
+  display_name: "Laetipark Project Workflow"
+  short_description: "Laetipark portfolio project workflow guide"
+  default_prompt: "Use $laetipark-project-workflow when working in D:\\laetipark on the Laetipark portfolio project."

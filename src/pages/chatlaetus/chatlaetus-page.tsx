@@ -43,6 +43,7 @@ const lastConversationStorageKey = 'chatlaetus-last-conversation-v1';
 const clientNicknameMaxLength = 80;
 const maxImageCount = 4;
 const maxImageSizeBytes = 5 * 1024 * 1024;
+const maxImagePayloadCharacters = 12_000_000;
 
 type StoredConversationSnapshot = {
   conversationId: string | null;
@@ -273,6 +274,12 @@ const readImageFile = (file: File): Promise<ChatImageAttachment> =>
     reader.readAsDataURL(file);
   });
 
+const getImagePayloadLength = (images: ChatImageAttachment[]): number =>
+  images.reduce((totalLength, image) => totalLength + image.dataUrl.length, 0);
+
+const estimateDataUrlLength = (file: File): number =>
+  Math.ceil(file.size / 3) * 4 + 128;
+
 type ChatLaetusPageProps = {
   onNavigateHome: () => void;
 };
@@ -401,9 +408,17 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
     const oversizedFiles = files.filter(
       (file) => file.type.startsWith('image/') && file.size > maxImageSizeBytes,
     );
-    const validFiles = imageFiles.filter(
+    const validSizeFiles = imageFiles.filter(
       (file) => file.size <= maxImageSizeBytes,
     );
+    const remainingPayloadCharacters =
+      maxImagePayloadCharacters - getImagePayloadLength(selectedImages);
+    let nextPayloadCharacters = 0;
+    const validFiles = validSizeFiles.filter((file) => {
+      nextPayloadCharacters += estimateDataUrlLength(file);
+
+      return nextPayloadCharacters <= remainingPayloadCharacters;
+    });
 
     if (remainingSlotCount <= 0) {
       setError(`이미지는 최대 ${maxImageCount}개까지 첨부할 수 있습니다.`);
@@ -412,9 +427,11 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
 
     if (validFiles.length === 0) {
       setError(
-        oversizedFiles.length > 0
+        imageFiles.length === 0
+          ? '이미지 파일만 첨부할 수 있습니다.'
+          : oversizedFiles.length > 0
           ? '이미지는 파일당 5MB 이하만 첨부할 수 있습니다.'
-          : '이미지 파일만 첨부할 수 있습니다.',
+          : '이미지는 총 12MB 이하로 첨부할 수 있습니다.',
       );
       return;
     }

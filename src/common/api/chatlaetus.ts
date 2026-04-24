@@ -171,14 +171,16 @@ const isFiniteNumber = (value: unknown): value is number =>
 
 const normalizeImages = (
   images: ChatImageAttachment[] | undefined,
-): ChatImageAttachment[] =>
-  images?.filter(
-    (image) =>
-      typeof image.dataUrl === 'string' &&
-      image.dataUrl.startsWith('data:image/') &&
-      typeof image.mimeType === 'string' &&
-      image.mimeType.startsWith('image/'),
-  ) ?? [];
+): Array<Pick<ChatImageAttachment, 'mimeType' | 'dataUrl'>> =>
+  images
+    ?.filter(
+      (image) =>
+        typeof image.dataUrl === 'string' &&
+        image.dataUrl.startsWith('data:image/') &&
+        typeof image.mimeType === 'string' &&
+        image.mimeType.startsWith('image/'),
+    )
+    .map(({ mimeType, dataUrl }) => ({ mimeType, dataUrl })) ?? [];
 
 const getChatLaetusApiBaseUrl = (): string | null => {
   if (typeof apiBaseUrl !== 'string') {

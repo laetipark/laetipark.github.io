@@ -13,6 +13,8 @@
   - React/Vite 구현 구조, 컴포넌트 작성 기준
 - `docs/rules/DESIGN.md`
   - 기존 포트폴리오 톤을 유지하는 파스텔 라이트/다크 디자인 기준
+- `docs/rules/FIGMA.md`
+  - Figma MCP 디자인을 프로젝트 컴포넌트와 토큰으로 옮기는 기준
 - `docs/rules/API.md`
   - `VITE_API_BASE_URL`과 Chat Laetus API 연결 계약
 - `docs/rules/DEPLOYMENT.md`

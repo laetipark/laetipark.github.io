@@ -18,8 +18,6 @@
   "clientSessionId": "브라우저 세션 식별자",
   "images": [
     {
-      "id": "선택값",
-      "name": "screenshot.png",
       "mimeType": "image/png",
       "dataUrl": "data:image/png;base64,..."
     }
