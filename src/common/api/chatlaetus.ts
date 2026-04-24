@@ -1,7 +1,15 @@
+export type ChatImageAttachment = {
+  id?: string;
+  name?: string;
+  mimeType: string;
+  dataUrl: string;
+};
+
 export type ChatMessage = {
   id?: string;
   role: 'user' | 'assistant';
   content: string;
+  images?: ChatImageAttachment[];
   createdAt?: string;
 };
 
@@ -10,6 +18,7 @@ type SendChatMessageParams = {
   conversationId: string | null;
   clientSessionId: string;
   clientNickname?: string;
+  images?: ChatImageAttachment[];
   enableThinking?: boolean;
   temperature?: number;
   topP?: number;
@@ -160,6 +169,17 @@ const normalizeApiUrl = (value: string): string => value.replace(/\/+$/, '');
 const isFiniteNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value);
 
+const normalizeImages = (
+  images: ChatImageAttachment[] | undefined,
+): ChatImageAttachment[] =>
+  images?.filter(
+    (image) =>
+      typeof image.dataUrl === 'string' &&
+      image.dataUrl.startsWith('data:image/') &&
+      typeof image.mimeType === 'string' &&
+      image.mimeType.startsWith('image/'),
+  ) ?? [];
+
 const getChatLaetusApiBaseUrl = (): string | null => {
   if (typeof apiBaseUrl !== 'string') {
     return null;
@@ -192,6 +212,7 @@ export const sendChatLaetusMessage = async ({
   conversationId,
   clientSessionId,
   clientNickname,
+  images,
   enableThinking = false,
   temperature,
   topP,
@@ -204,6 +225,7 @@ export const sendChatLaetusMessage = async ({
   }
 
   const trimmedClientNickname = clientNickname?.trim();
+  const normalizedImages = normalizeImages(images);
 
   const response = await fetch(
     `${normalizeApiUrl(configuredApiBaseUrl)}${chatEndpoint}`,
@@ -215,6 +237,7 @@ export const sendChatLaetusMessage = async ({
       body: JSON.stringify({
         message,
         clientSessionId,
+        ...(normalizedImages.length > 0 ? { images: normalizedImages } : {}),
         ...(conversationId ? { conversationId } : {}),
         ...(trimmedClientNickname
           ? { clientNickname: trimmedClientNickname.slice(0, 80) }

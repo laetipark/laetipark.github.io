@@ -14,14 +14,11 @@ type AppRoute = 'portfolio' | 'chat';
 type RoutePath = '/' | '/chat';
 
 const chatPath = '/chat';
-const legacyChatPath = '/chatlaetus';
 
 const routeFromPath = (pathname: string): AppRoute => {
   const normalizedPath = pathname.replace(/\/+$/, '') || '/';
 
-  return normalizedPath === chatPath || normalizedPath === legacyChatPath
-    ? 'chat'
-    : 'portfolio';
+  return normalizedPath === chatPath ? 'chat' : 'portfolio';
 };
 
 const PortfolioPage = ({ onOpenChat }: { onOpenChat: () => void }) => {
@@ -49,20 +46,6 @@ const App = () => {
     window.addEventListener('popstate', handlePopState);
 
     return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
-  useEffect(() => {
-    const normalizedPath = window.location.pathname.replace(/\/+$/, '') || '/';
-
-    if (normalizedPath !== legacyChatPath) {
-      return;
-    }
-
-    window.history.replaceState(
-      null,
-      '',
-      `${chatPath}${window.location.search}${window.location.hash}`,
-    );
   }, []);
 
   const navigate = useCallback((path: RoutePath) => {

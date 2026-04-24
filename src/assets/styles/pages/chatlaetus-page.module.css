@@ -132,6 +132,19 @@
   white-space: pre-wrap;
 }
 
+.messageImages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.messageImage {
+  width: 100%;
+  max-height: 220px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
 .typing {
   display: inline-flex;
   flex-wrap: wrap;
@@ -166,7 +179,8 @@
   gap: 8px;
 }
 
-.thinkingButton {
+.thinkingButton,
+.attachButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -183,18 +197,26 @@
     color 160ms ease;
 }
 
-.thinkingButton:hover:not(:disabled) {
+.attachButton {
+  cursor: pointer;
+  color: var(--brand-dark);
+}
+
+.thinkingButton:hover:not(:disabled),
+.attachButton:hover {
   border-color: var(--button-primary-bg);
   background: color-mix(in srgb, var(--button-primary-bg), transparent 74%);
 }
 
-.thinkingButtonActive {
+.thinkingButtonActive,
+.attachButtonActive {
   border-color: var(--button-primary-bg);
   color: var(--button-primary-text);
   background: var(--button-primary-bg);
 }
 
-.thinkingButton:focus-visible {
+.thinkingButton:focus-visible,
+.attachButton:focus-within {
   outline: 3px solid color-mix(in srgb, var(--brand), transparent 58%);
   outline-offset: 3px;
 }
@@ -202,6 +224,16 @@
 .thinkingButton:disabled {
   cursor: not-allowed;
   opacity: 0.55;
+}
+
+.fileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
 }
 
 .nicknameInput,
@@ -258,6 +290,49 @@
   opacity: 0.55;
 }
 
+.attachmentTray {
+  display: flex;
+  grid-column: 1 / -1;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.attachmentPreview {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-bg);
+}
+
+.attachmentPreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.removeAttachmentButton {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid color-mix(in srgb, var(--surface-bg), transparent 36%);
+  border-radius: 999px;
+  color: var(--button-primary-text);
+  background: color-mix(in srgb, var(--text-main), transparent 22%);
+}
+
+.removeAttachmentButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 @media (max-width: 767px) {
   .page {
     gap: 12px;
@@ -286,6 +361,10 @@
   .sendButton {
     min-height: var(--chat-control-height);
   }
+
+  .attachButton {
+    width: 100%;
+  }
 }
 
 @media (min-width: 768px) {
@@ -294,10 +373,9 @@
   }
 
   .form {
-    grid-template-columns: minmax(148px, 200px) var(--chat-control-height) minmax(
-        0,
-        1fr
-      ) 104px;
+    grid-template-columns:
+      minmax(148px, 200px) var(--chat-control-height)
+      var(--chat-control-height) minmax(0, 1fr) 104px;
     align-items: end;
   }
 }

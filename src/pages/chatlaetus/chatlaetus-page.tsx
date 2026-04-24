@@ -1,11 +1,20 @@
-import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
+import {
+  ChangeEvent,
+  FormEvent,
+  KeyboardEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import {
   faArrowLeft,
   faBrain,
   faCommentDots,
+  faPaperclip,
   faPaperPlane,
   faRotateLeft,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -13,7 +22,10 @@ import {
   hasChatLaetusApiUrl,
   sendChatLaetusMessage,
 } from '../../common/api/chatlaetus';
-import type { ChatMessage } from '../../common/api/chatlaetus';
+import type {
+  ChatImageAttachment,
+  ChatMessage,
+} from '../../common/api/chatlaetus';
 import { AppShell } from '../../components/layout/app-shell';
 
 import styles from '../../assets/styles/pages/chatlaetus-page.module.css';
@@ -29,6 +41,8 @@ const initialMessages: ChatMessage[] = [
 const clientNicknameStorageKey = 'chatlaetus-client-nickname';
 const lastConversationStorageKey = 'chatlaetus-last-conversation-v1';
 const clientNicknameMaxLength = 80;
+const maxImageCount = 4;
+const maxImageSizeBytes = 5 * 1024 * 1024;
 
 type StoredConversationSnapshot = {
   conversationId: string | null;
@@ -68,12 +82,36 @@ const createClientSessionId = (): string => {
   return `chatlaetus-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 };
 
+const toStoredImageAttachment = (value: unknown): ChatImageAttachment | null => {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  const { id, name, mimeType, dataUrl } = value;
+
+  if (
+    typeof mimeType !== 'string' ||
+    !mimeType.startsWith('image/') ||
+    typeof dataUrl !== 'string' ||
+    !dataUrl.startsWith('data:image/')
+  ) {
+    return null;
+  }
+
+  return {
+    id: typeof id === 'string' && id.trim() ? id : undefined,
+    name: typeof name === 'string' && name.trim() ? name : undefined,
+    mimeType,
+    dataUrl,
+  };
+};
+
 const toStoredChatMessage = (value: unknown): ChatMessage | null => {
   if (!isRecord(value)) {
     return null;
   }
 
-  const { role, content, id, createdAt } = value;
+  const { role, content, id, createdAt, images } = value;
 
   if (
     (role !== 'user' && role !== 'assistant') ||
@@ -83,9 +121,16 @@ const toStoredChatMessage = (value: unknown): ChatMessage | null => {
     return null;
   }
 
+  const storedImages = Array.isArray(images)
+    ? images
+        .map(toStoredImageAttachment)
+        .filter((image): image is ChatImageAttachment => image !== null)
+    : [];
+
   return {
     role,
     content,
+    ...(storedImages.length > 0 ? { images: storedImages } : {}),
     id: typeof id === 'string' && id.trim() ? id : undefined,
     createdAt:
       typeof createdAt === 'string' && createdAt.trim() ? createdAt : undefined,
@@ -205,6 +250,29 @@ const readStoredClientNickname = (): string => {
   }
 };
 
+const readImageFile = (file: File): Promise<ChatImageAttachment> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.addEventListener('load', () => {
+      if (typeof reader.result !== 'string') {
+        reject(new Error('이미지를 읽을 수 없습니다.'));
+        return;
+      }
+
+      resolve({
+        id: `${file.name}-${file.lastModified}-${file.size}`,
+        name: file.name,
+        mimeType: file.type,
+        dataUrl: reader.result,
+      });
+    });
+    reader.addEventListener('error', () => {
+      reject(new Error('이미지를 읽는 중 오류가 발생했습니다.'));
+    });
+    reader.readAsDataURL(file);
+  });
+
 type ChatLaetusPageProps = {
   onNavigateHome: () => void;
 };
@@ -222,13 +290,18 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
   );
   const [clientNickname, setClientNickname] = useState(readStoredClientNickname);
   const [input, setInput] = useState('');
+  const [selectedImages, setSelectedImages] = useState<ChatImageAttachment[]>(
+    [],
+  );
   const [enableThinking, setEnableThinking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
   const listEndRef = useRef<HTMLDivElement | null>(null);
   const isConfigured = hasChatLaetusApiUrl();
   const trimmedInput = input.trim();
-  const canSend = isConfigured && trimmedInput.length > 0 && !isSending;
+  const hasSendableContent =
+    trimmedInput.length > 0 || selectedImages.length > 0;
+  const canSend = isConfigured && hasSendableContent && !isSending;
   const visibleMessages = getVisibleMessages(messages);
 
   useEffect(() => {
@@ -274,11 +347,13 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
 
     const userMessage: ChatMessage = {
       role: 'user',
-      content: trimmedInput,
+      content: trimmedInput || '이미지를 첨부했습니다.',
+      ...(selectedImages.length > 0 ? { images: selectedImages } : {}),
     };
 
     setMessages((currentMessages) => [...currentMessages, userMessage]);
     setInput('');
+    setSelectedImages([]);
     setError(null);
     setIsSending(true);
 
@@ -288,6 +363,7 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
         conversationId,
         clientSessionId,
         clientNickname,
+        images: userMessage.images,
         enableThinking,
       });
 
@@ -308,6 +384,67 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
     }
   };
 
+  const handleImageInputChange = async (
+    event: ChangeEvent<HTMLInputElement>,
+  ) => {
+    const files = Array.from(event.target.files ?? []);
+    event.target.value = '';
+
+    if (files.length === 0) {
+      return;
+    }
+
+    const remainingSlotCount = maxImageCount - selectedImages.length;
+    const imageFiles = files
+      .filter((file) => file.type.startsWith('image/'))
+      .slice(0, remainingSlotCount);
+    const oversizedFiles = files.filter(
+      (file) => file.type.startsWith('image/') && file.size > maxImageSizeBytes,
+    );
+    const validFiles = imageFiles.filter(
+      (file) => file.size <= maxImageSizeBytes,
+    );
+
+    if (remainingSlotCount <= 0) {
+      setError(`이미지는 최대 ${maxImageCount}개까지 첨부할 수 있습니다.`);
+      return;
+    }
+
+    if (validFiles.length === 0) {
+      setError(
+        oversizedFiles.length > 0
+          ? '이미지는 파일당 5MB 이하만 첨부할 수 있습니다.'
+          : '이미지 파일만 첨부할 수 있습니다.',
+      );
+      return;
+    }
+
+    try {
+      const images = await Promise.all(validFiles.map(readImageFile));
+      setSelectedImages((currentImages) => [...currentImages, ...images]);
+      setError(
+        files.length > validFiles.length || oversizedFiles.length > 0
+          ? `이미지는 최대 ${maxImageCount}개, 파일당 5MB 이하만 첨부됩니다.`
+          : null,
+      );
+    } catch (readError) {
+      setError(
+        readError instanceof Error
+          ? readError.message
+          : '이미지를 읽는 중 오류가 발생했습니다.',
+      );
+    }
+  };
+
+  const removeSelectedImage = (imageId: string | undefined, index: number) => {
+    setSelectedImages((currentImages) =>
+      currentImages.filter(
+        (image, currentIndex) =>
+          currentIndex !== index || (imageId && image.id !== imageId),
+      ),
+    );
+  };
+
   const handleInputKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key !== 'Enter' || event.shiftKey || event.nativeEvent.isComposing) {
       return;
@@ -323,6 +460,7 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
     setConversationId(null);
     setError(null);
     setInput('');
+    setSelectedImages([]);
     setEnableThinking(false);
   };
 
@@ -375,6 +513,18 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
                 <span className={styles.messageRole}>
                   {message.role === 'user' ? 'You' : 'Laetus'}
                 </span>
+                {message.images && message.images.length > 0 && (
+                  <div className={styles.messageImages}>
+                    {message.images.map((image, imageIndex) => (
+                      <img
+                        className={styles.messageImage}
+                        key={`${image.id ?? image.name ?? image.mimeType}-${imageIndex}`}
+                        src={image.dataUrl}
+                        alt={image.name ?? '첨부 이미지'}
+                      />
+                    ))}
+                  </div>
+                )}
                 <p className={styles.messageContent}>{message.content}</p>
               </article>
             ))}
@@ -442,6 +592,23 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
             >
               <FontAwesomeIcon icon={faBrain} />
             </button>
+            <label
+              className={`${styles.attachButton} ${
+                selectedImages.length > 0 ? styles.attachButtonActive : ''
+              }`}
+              aria-label={'이미지 첨부'}
+              title={'이미지 첨부'}
+            >
+              <FontAwesomeIcon icon={faPaperclip} />
+              <input
+                className={styles.fileInput}
+                type={'file'}
+                accept={'image/*'}
+                multiple
+                disabled={!isConfigured || isSending}
+                onChange={handleImageInputChange}
+              />
+            </label>
             <div className={styles.messageField}>
               <label className={styles.inputLabel} htmlFor={'chatlaetus-input'}>
                 메시지
@@ -453,7 +620,7 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
                 rows={1}
                 placeholder={
                   isConfigured
-                    ? '질문을 입력하세요.'
+                    ? '질문을 입력하거나 이미지를 첨부하세요.'
                     : 'API 설정이 필요합니다.'
                 }
                 disabled={!isConfigured || isSending}
@@ -469,6 +636,27 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
               <FontAwesomeIcon icon={faPaperPlane} />
               <span>전송</span>
             </button>
+            {selectedImages.length > 0 && (
+              <div className={styles.attachmentTray}>
+                {selectedImages.map((image, index) => (
+                  <div
+                    className={styles.attachmentPreview}
+                    key={`${image.id ?? image.name ?? image.mimeType}-${index}`}
+                  >
+                    <img src={image.dataUrl} alt={image.name ?? '첨부 이미지'} />
+                    <button
+                      className={styles.removeAttachmentButton}
+                      type={'button'}
+                      aria-label={'첨부 이미지 제거'}
+                      disabled={isSending}
+                      onClick={() => removeSelectedImage(image.id, index)}
+                    >
+                      <FontAwesomeIcon icon={faXmark} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </form>
         </div>
       </section>
