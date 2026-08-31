@@ -1,35 +1,50 @@
-# Figma Design System Rules
+# Figma 디자인 구현 규칙
 
-이 문서는 Figma MCP로 받은 디자인을 Laetipark 포트폴리오 코드에 구현할 때 따르는 규칙이다.
-React 구현 정본은 `docs/rules/FRONTEND.md`, UI/토큰 정본은 `docs/rules/DESIGN.md`다.
+이 문서는 Figma에서 받은 디자인을 Laetipark 포트폴리오 코드로 옮길 때 따르는 규칙입니다. 코드 구조는 [프론트엔드 규칙](FRONTEND.md), 시각 토큰과 접근성은 [디자인 규칙](DESIGN.md)이 정본입니다.
 
-## Required Flow
+## 작업 순서
 
-1. Figma 구현 작업 전 `docs/README.md`, `docs/rules/FRONTEND.md`, `docs/rules/DESIGN.md`, 이 문서를 읽는다.
-2. Figma MCP에서 정확한 노드의 구조 정보를 먼저 가져온다.
-3. 구조 정보가 너무 크거나 잘리면 메타데이터로 노드 범위를 좁힌 뒤 필요한 노드만 다시 가져온다.
-4. 구현 대상의 스크린샷을 함께 확인한 뒤 코드 변경을 시작한다.
-5. Figma 출력이 React + Tailwind 형태여도 최종 코드는 이 프로젝트의 React, TypeScript, CSS Module 규칙으로 옮긴다.
-6. 구현 후 `npm run build`로 타입과 번들 검증을 수행한다.
+1. [프로젝트 작업 가이드](../README.md), 프론트엔드 규칙, 디자인 규칙과 이 문서를 읽습니다.
+2. 구현할 Figma 파일과 정확한 노드의 구조 정보를 가져옵니다.
+3. 응답이 너무 크거나 잘리면 메타데이터로 범위를 좁힌 뒤 필요한 노드만 다시 조회합니다.
+4. 같은 노드의 스크린샷을 확인해 구조 정보와 실제 시각 결과를 함께 해석합니다.
+5. 폰트, 아이콘, 이미지와 SVG 출처를 확인하고 저장소에서 재사용할 자산을 먼저 찾습니다.
+6. Figma 출력 형식과 관계없이 이 프로젝트의 React, TypeScript와 CSS Modules 패턴으로 구현합니다.
+7. 코드 검증과 시각 비교를 마친 뒤 완료합니다.
 
-## Translation Rules
+## 번역 우선순위
 
-- Figma MCP 출력은 최종 코드가 아니라 디자인 구조와 의도를 설명하는 참고 자료로 취급한다.
-- Figma의 색상, spacing, radius, shadow는 `docs/rules/DESIGN.md`의 토큰과 레이아웃 규칙으로 매핑한다.
-- Figma의 컴포넌트 구조는 `docs/rules/FRONTEND.md`의 위치, naming, CSS Module 규칙으로 옮긴다.
-- Figma의 카드, 칩, 버튼, 모달은 기존 `project-section`, `profile-hero`, `theme-toggle` 스타일 패턴을 먼저 재사용한다.
-- 새 화면을 만들 때도 `AppShell`, `Section`, 기존 shallow routing 방식을 우선 사용한다.
-- Figma와 1:1 시각 일치를 목표로 하되, 이력서형 포트폴리오의 컴팩트한 정보 밀도와 파스텔 라이트/다크 톤을 유지한다.
+충돌이 생기면 아래 순서로 판단합니다.
 
-## Asset Handling
+1. 사용자의 현재 명시 요청과 기능·접근성 요구사항
+2. 프로젝트의 컴포넌트 구조, 디자인 토큰과 반응형 규칙
+3. Figma의 레이아웃, 정보 계층과 콘텐츠
+4. 픽셀 단위 장식 차이
 
-- Figma MCP가 localhost 이미지나 SVG 소스를 제공하면 placeholder를 만들지 않는다.
-- 제공된 localhost 소스는 직접 사용하거나, 프로젝트에 보관해야 할 경우 `docs/rules/DESIGN.md`의 자산 위치 규칙에 맞춰 옮긴다.
-- Figma 구현만을 위해 새 아이콘 패키지를 설치하지 않는다.
-- Figma에 없는 임시 이미지를 만들 때는 실제 구현 전 반드시 대체 대상과 보관 위치를 명시한다.
+Figma와 높은 시각 일치를 목표로 하되, 이력서형 포트폴리오의 정보 밀도와 라이트·다크 테마 계약을 깨지 않습니다. 의도적인 큰 차이가 필요하면 임의로 숨기지 말고 결과에 이유를 남깁니다.
 
-## Validation
+## 코드 변환
 
-- 변경 후 `npm run build`를 실행한다.
-- UI 변경 폭이 크면 브라우저에서 모바일/데스크톱 화면을 확인한다.
-- 다크 모드와 라이트 모드에서 토큰 대비, focus-visible, 모달/버튼 상태를 함께 확인한다.
+- Figma 도구의 출력은 완성 코드가 아니라 디자인 구조와 의도를 설명하는 자료로 취급합니다.
+- React + Tailwind 예제가 제공되어도 Tailwind를 추가하지 않고 기존 TSX와 CSS Module로 옮깁니다.
+- 색상, spacing, radius와 shadow는 디자인 규칙의 의미 기반 토큰에 매핑합니다.
+- 컴포넌트 경계와 파일 위치는 프론트엔드 규칙의 디렉터리 역할을 따릅니다.
+- 카드, 칩, 버튼과 모달은 기존 `ProjectSection`, `ProfileHero`, `ThemeToggle`, `Section` 패턴을 먼저 검토합니다.
+- 새 화면도 `AppShell`과 현재 `window.history` 기반 라우팅을 우선 사용합니다.
+- Figma의 고정 크기를 그대로 복사하기보다 콘텐츠 overflow와 모바일·데스크톱 변화를 함께 설계합니다.
+
+## 자산 처리
+
+- Figma가 제공한 실제 자산이 있으면 임의 placeholder로 대체하지 않습니다.
+- Figma 도구의 localhost URL은 조회·내보내기 과정에서만 유효합니다. 커밋되는 코드에는 localhost URL을 남기지 말고 필요한 자산을 `src/assets`로 가져와 import합니다.
+- 빌드 변환이 필요 없는 favicon이나 공개 정적 파일만 디자인 규칙에 따라 `public`에 둡니다.
+- 기존 Font Awesome 아이콘으로 같은 의미를 표현할 수 있는지 먼저 확인하고, Figma 구현만을 위해 새 아이콘 패키지를 설치하지 않습니다.
+- 임시 자산을 써야 한다면 대체 대상, 임시인 이유와 최종 보관 위치를 명확히 기록합니다.
+
+## 검증
+
+- `npm run lint`와 `npm run build`를 실행합니다.
+- 대상 Figma 스크린샷과 구현 화면을 같은 viewport에서 비교합니다.
+- 모바일과 데스크톱, 라이트와 다크 모드에서 레이아웃과 토큰 대비를 확인합니다.
+- 키보드 포커스, 버튼 상태, 모달과 입력 상호작용을 확인합니다.
+- 차이가 있다면 기능·접근성 또는 프로젝트 규칙 때문에 의도한 차이인지, 놓친 구현인지 구분합니다.
