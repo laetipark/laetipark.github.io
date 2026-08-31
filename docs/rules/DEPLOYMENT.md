@@ -11,6 +11,7 @@
 ## GitHub Actions
 
 - `main` 브랜치 push 또는 수동 실행으로 배포한다.
+- 로컬과 CI의 Node.js 런타임은 `.nvmrc`에 선언한 24 LTS 계열을 사용한다.
 - 빌드에는 `npm ci`와 `npm run build`를 사용한다.
 - `VITE_API_BASE_URL`은 GitHub Actions secret에서 빌드 환경 변수로 주입한다.
 - GitHub Pages의 Build and deployment Source는 `GitHub Actions`로 설정한다.
