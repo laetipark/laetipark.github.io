@@ -2,7 +2,7 @@
 
 데이터를 통해 일상을 편하고 즐겁게 만드는 개발자, **박동훈**의 포트폴리오입니다. 직접 만든 서비스와 개발 방식, 꾸준히 쌓아 온 학습 기록을 소개합니다.
 
-[포트폴리오 보기](https://laetipark.github.io/) · [Chat Laetus 열기](https://laetipark.github.io/chat) · [프로젝트 작업 가이드](docs/README.md)
+[포트폴리오 보기](https://laetipark.me/) · [Chat Laetus 열기](https://laetipark.me/chat) · [프로젝트 작업 가이드](docs/README.md)
 
 ## 화면 미리보기
 

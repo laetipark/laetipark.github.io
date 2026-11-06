@@ -129,7 +129,6 @@ export const projects: PortfolioProject[] = [
       },
     ],
     links: [
-      { label: '서비스 방문', href: 'https://laetipark.me/' },
       { label: '웹 GitHub', href: 'https://github.com/laetipark/mobinogi-web' },
       { label: '봇 GitHub', href: 'https://github.com/laetipark/mobinogi-bot' },
     ],
