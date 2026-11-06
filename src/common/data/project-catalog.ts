@@ -193,7 +193,7 @@ export const projects: PortfolioProject[] = [
     title: '산등성이',
     category: 'app',
     banner: mountainBanner,
-    bannerAlt: '웃는 해와 초록 산길, 산등성이 이름을 담은 소개 배너',
+    bannerAlt: '웃는 해와 산 아이콘 옆에 산등성이 이름을 배치한 소개 배너',
     bannerCaption: '프로젝트 소개 배너 · AI 생성',
     summary:
       '주변 산과 날씨, 지역별 산불 위험 예보를 지도에서 확인하는 Flutter 앱입니다.',

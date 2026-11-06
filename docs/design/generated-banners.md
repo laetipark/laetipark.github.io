@@ -10,15 +10,15 @@
 | ----------- | ----------------------------------------------------- | -------------------------------------------------------------------------------- |
 | Chat Laetus | 짙은 초록, 민트·라벤더 대화 말풍선과 이미지 입력 상징 | [chat-laetus-banner.png](../../src/assets/projects/chat-laetus-banner.png)       |
 | UNINOTE     | 하늘색·아이보리, 열린 노트와 연결된 마인드맵          | [uninote-banner.png](../../src/assets/projects/uninote-banner.png)               |
-| 산등성이    | 기존 웃는 해·산 로고, 초록 능선과 산책길              | [happy-mountain-banner.png](../../src/assets/projects/happy-mountain-banner.png) |
-| Gowatch     | 기존 G·스톱워치 모티프, 노란색과 집중 시간의 흐름     | [gowatch-banner.png](../../src/assets/projects/gowatch-banner.png)               |
-| Blossom Bot | 기존 벚꽃 B 심볼, 보라색 말풍선과 게임 카드           | [blossom-bot-banner.png](../../src/assets/projects/blossom-bot-banner.png)       |
+| 산등성이    | 웃는 해·산 아이콘과 프로젝트명, 아이보리·초록 배경    | [happy-mountain-banner.png](../../src/assets/projects/happy-mountain-banner.png) |
+| Gowatch     | 노란 G·스톱워치 아이콘과 프로젝트명을 나란히 배치    | [gowatch-banner.png](../../src/assets/projects/gowatch-banner.png)               |
+| Blossom Bot | 벚꽃 B 아이콘과 프로젝트명, 보라색 배경              | [blossom-bot-banner.png](../../src/assets/projects/blossom-bot-banner.png)       |
 
-산등성이·Gowatch·Blossom Bot은 저장소의 기존 로고를 참조했습니다. UNINOTE는 기존 화면의 하늘색을, Chat Laetus는 포트폴리오의 초록·민트·라벤더를 사용했습니다. 공통으로 큰 프로젝트명, 부드러운 종이 질감과 여백을 사용하되 각 프로젝트의 주제를 구분했습니다.
+산등성이·Gowatch·Blossom Bot은 최종 사용자 요청에 따라 저장소의 기존 아이콘을 참조해 왼쪽에 아이콘, 오른쪽에 큰 프로젝트명을 배치했습니다. UNINOTE는 기존 화면의 하늘색을, Chat Laetus는 포트폴리오의 초록·민트·라벤더를 사용했습니다. 공통으로 부드러운 종이 질감과 여백을 사용하되 각 프로젝트의 색상을 구분했습니다.
 
 프롬프트의 요청 해상도와 생성 도구의 실제 출력은 다를 수 있어, 배포 전 PNG 헤더와 브라우저의 `naturalWidth`·`naturalHeight`로 다섯 파일이 모두 같은 크기임을 확인했습니다. 최종 문구와 참조 자산은 [프롬프트 기록](banner-prompts.json)에 보관합니다.
 
-이 이미지는 프로젝트를 소개하는 일러스트이며 실제 제품 화면이나 기능 시연이 아닙니다. 목록과 상세의 캡션은 `프로젝트 소개 배너 · AI 생성`으로 구분합니다. 기존 화면·로고·ERD는 상세 이미지로 보존합니다.
+이 이미지는 프로젝트 소개를 위해 제작한 배너이며 실제 제품 화면이나 기능 시연이 아닙니다. 목록과 상세의 캡션은 `프로젝트 소개 배너 · AI 생성`으로 구분합니다. 기존 화면·로고·ERD는 상세 이미지로 보존합니다.
 
 ## 프로젝트 README 반영
 
@@ -40,9 +40,9 @@ UNINOTE는 웹과 Android가 하나의 프로젝트이므로 같은 PNG를 두 �
 | LaetiPark API   | [912a8fa](https://github.com/laetipark/laetipark-api/commit/912a8faf3554e5034dc8bee85f10240b7b258c82)     |
 | UNINOTE 웹      | [83b217b](https://github.com/laetipark/uninote-web/commit/83b217b2f9531de8914c82da2e269d4a539fb5e4)       |
 | UNINOTE Android | [fc89810](https://github.com/laetipark/uninote-app/commit/fc89810dcbfa338e5ffad7b9c86bf2e27205f655)       |
-| 산등성이        | [0467fac](https://github.com/laetipark/happy-mountain/commit/0467facb6e0b4705b515a34b666f3a5c92b91f4c)    |
-| Gowatch         | [6be924d](https://github.com/laetipark/gowatch-bot/commit/6be924db459e95acf6a3f2d20465300815eafda8)       |
-| Blossom Bot     | [11a14da](https://github.com/laetipark/brawltree-discord/commit/11a14da68055407ce11e9c080a131fb9a138316a) |
+| 산등성이        | [6cfd611](https://github.com/laetipark/happy-mountain/commit/6cfd61176ba64ed292db811e9114e260e4dbd0df)    |
+| Gowatch         | [32406b3](https://github.com/laetipark/gowatch-bot/commit/32406b317e7645f0fd340d6c1ba36436241cb472)       |
+| Blossom Bot     | [6837a20](https://github.com/laetipark/brawltree-discord/commit/6837a20f42de52c7801dc655983c0c16d5a07c9d) |
 
 각 원격 HEAD와 README·이미지 blob이 검증한 로컬 커밋과 동일함을 확인했습니다. 강제 푸시 없이 반영했으며 커밋마다 변경 파일은 두 개입니다.
 
