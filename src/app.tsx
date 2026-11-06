@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { activities, educationItems } from './common/data/portfolio';
+import { activities, educationItems, profile } from './common/data/portfolio';
 import { ThemeToggle } from './components/common/theme-toggle';
 import { AppShell } from './components/layout/app-shell';
 import { ProfileHero } from './components/profile/profile-hero';
@@ -9,6 +9,7 @@ import { SkillSection } from './components/skills/skill-section';
 import { SummarySection } from './components/summary/summary-section';
 import { TimelineSection } from './components/timeline/timeline-section';
 import { ChatLaetusPage } from './pages/chatlaetus/chatlaetus-page';
+import styles from './assets/styles/app.module.css';
 
 type AppRoute = 'portfolio' | 'chat';
 type RoutePath = '/' | '/chat';
@@ -25,11 +26,28 @@ const PortfolioPage = ({ onOpenChat }: { onOpenChat: () => void }) => {
   return (
     <AppShell>
       <ProfileHero onOpenChat={onOpenChat} />
+      <ProjectSection onOpenChat={onOpenChat} />
       <SummarySection />
-      <ProjectSection />
       <SkillSection />
-      <TimelineSection title={'학력'} items={educationItems} />
-      <TimelineSection title={'자격증 및 기타 활동'} items={activities} />
+      <div className={styles.history} id={'history'}>
+        <TimelineSection title={'학력'} items={educationItems} />
+        <TimelineSection title={'자격 · 활동'} items={activities} />
+      </div>
+      <footer className={styles.footer}>
+        <span>박동훈 · Laetipark</span>
+        <nav className={styles.footerLinks} aria-label={'연락처'}>
+          {profile.contacts.map((contact) => (
+            <a
+              href={contact.href}
+              key={contact.href}
+              target={contact.external ? '_blank' : undefined}
+              rel={contact.external ? 'noreferrer' : undefined}
+            >
+              {contact.label}
+            </a>
+          ))}
+        </nav>
+      </footer>
     </AppShell>
   );
 };
@@ -54,7 +72,7 @@ const App = () => {
     }
 
     setRoute(routeFromPath(path));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
 
   return (
@@ -64,7 +82,7 @@ const App = () => {
       ) : (
         <PortfolioPage onOpenChat={() => navigate(chatPath)} />
       )}
-      <ThemeToggle isChatOffset={route === 'chat'} />
+      <ThemeToggle />
     </>
   );
 };

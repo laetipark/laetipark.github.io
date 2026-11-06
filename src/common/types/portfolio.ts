@@ -52,30 +52,44 @@ export type ProjectFact = {
   values: string[];
 };
 
+export type ProjectCategory = 'web' | 'app' | 'backend' | 'bot';
+
+export type ProjectStorySection = {
+  title: string;
+  lines: TextLine[];
+};
+
+export type ProjectLink = {
+  label: string;
+  href: string;
+  external?: boolean;
+};
+
 export type PortfolioProject = {
   id: string;
   title: string;
-  period: string;
-  image: string;
-  imageAlt: string;
+  category: ProjectCategory;
+  featured?: boolean;
+  summary: string;
+  highlights: TextLine[];
+  period?: string;
+  banner?: string;
+  bannerAlt?: string;
+  bannerCaption?: string;
+  image?: string;
+  imageAlt?: string;
+  imageCaption?: string;
+  role?: string;
   statuses: ProjectStatus[];
   bullets: TextLine[];
   facts: ProjectFact[];
-  description: TextLine[];
-  link: {
-    label: string;
-    href: string;
-  };
-};
-
-export type SkillBadge = {
-  label: string;
-  src: string;
+  story: ProjectStorySection[];
+  links: ProjectLink[];
 };
 
 export type SkillGroup = {
   title: string;
-  badges: SkillBadge[];
+  items: string[];
 };
 
 export type TimelineItem = {

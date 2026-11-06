@@ -1,5 +1,7 @@
 # 프론트엔드 규칙
 
+[작업 가이드](../README.md) · [저장소 소개](../../README.md)
+
 이 문서는 React/Vite 애플리케이션 구조와 구현 규칙의 정본입니다. 시각 디자인, 토큰과 접근성은 [디자인 규칙](DESIGN.md)을 함께 따릅니다.
 
 ## 기술 스택과 진입점
@@ -43,6 +45,43 @@
 - 파일 내부에서만 쓰는 보조 컴포넌트는 export하지 않아도 됩니다.
 - 새 섹션 UI를 만들기 전에 `Section`, `RichTextLine`, `AppShell` 같은 기존 공통 컴포넌트를 먼저 검토합니다.
 - 외부 링크는 `target="_blank"`와 `rel="noreferrer"`를 함께 사용합니다.
+
+## 포트폴리오 데이터와 공통 인터페이스
+
+프로필·학습·기술·이력은 [포트폴리오 데이터](../../src/common/data/portfolio.ts), 프로젝트 목록은 아래 데이터 모듈, 공유 타입은 [포트폴리오 타입](../../src/common/types/portfolio.ts)에 둡니다. 컴포넌트 안에 같은 문장이나 기술 목록을 중복하지 않습니다.
+
+| 데이터 모듈                                                            | 역할                                                                          |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| [project-catalog.ts](../../src/common/data/project-catalog.ts)         | 프로젝트 배열의 조합·순서, Brawl Tree·Sexynogi·UNINOTE·산등성이·Blossom Stats |
+| [project-services.ts](../../src/common/data/project-services.ts)       | Orsem·Mystery Mango·Chat Laetus 서비스 소개                                   |
+| [project-experiments.ts](../../src/common/data/project-experiments.ts) | 돈이머니·여기가자·피드모아 API와 Gowatch·Blossom Bot 소개                     |
+
+`portfolio.ts`가 조합된 `projects`를 다시 export합니다. 목록·필터 개수·상세 모달은 이 배열을 함께 사용하며 별도 목록을 중복 유지하지 않습니다.
+
+| 인터페이스                                                                           | 역할                                                          |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| `PortfolioProject.summary: string`                                                   | 프로젝트 목록에서 바로 읽는 한 문장 소개                      |
+| `PortfolioProject.highlights: TextLine[]`                                            | 기존 설명에서 추출한 핵심 구현 경험                           |
+| `PortfolioProject.category`                                                          | `web`, `app`, `backend`, `bot` 중 하나로 분류                 |
+| `PortfolioProject.featured?: boolean`                                                | 대표 프로젝트 행으로 강조할 항목 선택                         |
+| `PortfolioProject.period?: string` · `role?: string`                                 | 근거가 확인된 기간과 개인 담당 역할만 표시                    |
+| `PortfolioProject.image?: string` · `imageAlt?: string` · `imageCaption?: string`    | 실제 자산과 대체 텍스트, 화면·로고·ERD·목업 종류 설명         |
+| `PortfolioProject.banner?: string` · `bannerAlt?: string` · `bannerCaption?: string` | 카드에서 우선 표시할 프로젝트 배너와 대체 텍스트·출처 설명    |
+| `PortfolioProject.story: ProjectStorySection[]`                                      | 제목과 `lines: TextLine[]`로 구분한 개발 배경·접근·구현 설명  |
+| `PortfolioProject.links: ProjectLink[]`                                              | 서비스·소스 등 여러 링크의 `label`, `href`, 선택적 `external` |
+| `SkillGroup.items: string[]`                                                         | 외부 이미지 요청 없이 렌더링하는 기술 이름 목록               |
+| `Section.id?: string`                                                                | 같은 페이지 안에서 이동할 수 있는 안정적인 앵커               |
+| `AppShell.variant?: 'portfolio' \| 'chat'`                                           | 기본 포트폴리오 배치와 채팅 전용 여백·높이의 구분             |
+| `ProjectSection.onOpenChat: () => void`                                              | 프로젝트의 `/chat` 링크를 기존 앱 이동 함수에 연결            |
+
+- 포트폴리오 탐색은 `projects`, `about`, `skills`, `history` 앵커를 사용합니다. 앵커를 바꾸면 해당 링크와 섹션 ID를 함께 갱신합니다.
+- 프로젝트의 `bullets`, `facts`, `story`는 상세 설명에 사용합니다. 요약을 편집할 때 기간·상태·서비스 URL과 기존 사실을 임의로 변경하지 않습니다. 확인되지 않은 선택 필드는 비워 두고 화면에서 생략합니다.
+- 분야별 필터는 `category`를 사용하고, 선택 상태는 `aria-pressed`, 결과 개수는 `aria-live`로 알립니다. 필터 결과 안에서도 `featured` 항목을 먼저 보여줍니다.
+- `links`의 외부 링크는 새 탭과 `noreferrer`를 사용합니다. `external: false`인 `/chat`의 일반 클릭은 `onOpenChat`으로 처리하고 수정키 조합·중간 클릭은 브라우저 기본 동작을 유지합니다.
+- 이미지가 있으면 내용에 맞는 `imageAlt`와 종류·출처를 설명하는 `imageCaption`을 함께 제공합니다. 자산과 소개의 근거는 [프로젝트 근거 자료](../design/project-sources.md)에 기록합니다.
+- 카드는 `banner`를 우선 사용하고 없으면 `image`를 사용합니다. 배너에는 별도의 `bannerAlt`·`bannerCaption`을 사용해 상세 이미지의 설명이 섞이지 않게 합니다.
+- 모달은 배너와 상세 이미지를 구분해 보여주고, 두 필드가 같은 원본 경로면 한 번만 표시합니다. 각 이미지의 원본 크게 보기 링크를 유지합니다.
+- 테마, 모달, 채팅의 구체적인 화면 동작은 [디자인 규칙](DESIGN.md)을 따릅니다.
 
 ## 스타일 통합
 

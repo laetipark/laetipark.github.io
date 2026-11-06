@@ -1,5 +1,7 @@
 # 배포 규칙
 
+[작업 가이드](../README.md) · [저장소 소개](../../README.md)
+
 이 문서는 GitHub Pages와 GitHub Actions 배포 계약의 정본입니다.
 
 ## 관련 설정
@@ -11,7 +13,7 @@
 
 ## 배포 대상과 산출물
 
-- 배포 주소는 `https://laetipark.github.io/`입니다.
+- 배포 주소는 [laetipark.github.io](https://laetipark.github.io/)입니다.
 - 사용자 사이트의 루트에 배포하므로 Vite `base`는 `/`를 유지합니다. 실제 자산 URL은 이 설정을 기준으로 생성됩니다.
 - `package.json`의 `homepage`도 같은 주소를 가리키지만 Vite 공개 경로를 결정하는 값은 아닙니다.
 - `npm run build`의 배포 산출물은 `dist/`이며 워크플로는 이 디렉터리만 Pages artifact로 업로드합니다.

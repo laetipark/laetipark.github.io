@@ -1,7 +1,7 @@
 .toggle {
   position: fixed;
-  right: 18px;
-  bottom: 18px;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom));
   z-index: 20;
   display: inline-flex;
   align-items: center;
@@ -10,34 +10,17 @@
   height: 46px;
   padding: 0;
   border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  color: var(--button-primary-text);
-  background: var(--button-primary-bg);
-  box-shadow: var(--shadow-floating);
-  transition:
-    transform 0.2s ease,
-    background 0.2s ease,
-    border-color 0.2s ease;
+  border-radius: var(--radius);
+  color: var(--text-main);
+  background: var(--surface-elevated-bg);
+  box-shadow: var(--shadow-soft);
 }
-
 .toggle:hover {
-  transform: translateY(-2px);
-  background: var(--button-primary-hover-bg);
+  background: var(--surface-strong-bg);
+  border-color: var(--brand-dark);
 }
-
-.toggle:active {
-  transform: translateY(0);
-}
-
 @media (min-width: 768px) {
   .toggle {
     right: 24px;
-    bottom: 24px;
-  }
-}
-
-@media (max-width: 767px) {
-  .chatOffset {
-    bottom: calc(334px + env(safe-area-inset-bottom));
   }
 }

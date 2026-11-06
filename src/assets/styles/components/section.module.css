@@ -1,21 +1,22 @@
 .section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  min-width: 0;
+  gap: var(--space-6);
+  scroll-margin-top: 24px;
 }
-
 .sectionTitle {
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: var(--brand-dark);
-  font-size: 24px;
-  font-weight: 800;
-  line-height: 1.25;
+  gap: 20px;
+  color: var(--text-main);
+  font-size: var(--font-size-title);
+  font-weight: 600;
+  letter-spacing: -0.035em;
 }
-
 .sectionTitle::after {
   flex: 1 1 auto;
+  min-width: 16px;
   height: 1px;
   content: '';
   background: var(--border);

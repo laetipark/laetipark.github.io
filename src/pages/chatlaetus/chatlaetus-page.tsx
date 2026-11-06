@@ -33,8 +33,7 @@ import styles from '../../assets/styles/pages/chatlaetus-page.module.css';
 const initialMessages: ChatMessage[] = [
   {
     role: 'assistant',
-    content:
-      '안녕하세요. 채팅 내용은 저장됩니다.',
+    content: '안녕하세요. 궁금한 점을 질문하거나 이미지를 첨부해 주세요.',
   },
 ];
 
@@ -83,7 +82,9 @@ const createClientSessionId = (): string => {
   return `chatlaetus-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 };
 
-const toStoredImageAttachment = (value: unknown): ChatImageAttachment | null => {
+const toStoredImageAttachment = (
+  value: unknown,
+): ChatImageAttachment | null => {
   if (!isRecord(value)) {
     return null;
   }
@@ -241,10 +242,9 @@ const readStoredClientNickname = (): string => {
 
   try {
     return (
-      window.localStorage.getItem(clientNicknameStorageKey)?.slice(
-        0,
-        clientNicknameMaxLength,
-      ) ?? ''
+      window.localStorage
+        .getItem(clientNicknameStorageKey)
+        ?.slice(0, clientNicknameMaxLength) ?? ''
     );
   } catch {
     return '';
@@ -295,7 +295,9 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
   const [clientSessionId] = useState(
     () => storedConversation?.clientSessionId ?? createClientSessionId(),
   );
-  const [clientNickname, setClientNickname] = useState(readStoredClientNickname);
+  const [clientNickname, setClientNickname] = useState(
+    readStoredClientNickname,
+  );
   const [input, setInput] = useState('');
   const [selectedImages, setSelectedImages] = useState<ChatImageAttachment[]>(
     [],
@@ -312,7 +314,13 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
   const visibleMessages = getVisibleMessages(messages);
 
   useEffect(() => {
-    listEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    listEndRef.current?.scrollIntoView({
+      behavior: prefersReducedMotion ? 'instant' : 'smooth',
+      block: 'end',
+    });
   }, [messages, isSending]);
 
   useEffect(() => {
@@ -375,10 +383,7 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
       });
 
       setConversationId(result.conversationId);
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        result.message,
-      ]);
+      setMessages((currentMessages) => [...currentMessages, result.message]);
     } catch (sendError) {
       const message =
         sendError instanceof Error
@@ -430,8 +435,8 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
         imageFiles.length === 0
           ? '이미지 파일만 첨부할 수 있습니다.'
           : oversizedFiles.length > 0
-          ? '이미지는 파일당 5MB 이하만 첨부할 수 있습니다.'
-          : '이미지는 총 12MB 이하로 첨부할 수 있습니다.',
+            ? '이미지는 파일당 5MB 이하만 첨부할 수 있습니다.'
+            : '이미지는 총 12MB 이하로 첨부할 수 있습니다.',
       );
       return;
     }
@@ -463,7 +468,11 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
   };
 
   const handleInputKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key !== 'Enter' || event.shiftKey || event.nativeEvent.isComposing) {
+    if (
+      event.key !== 'Enter' ||
+      event.shiftKey ||
+      event.nativeEvent.isComposing
+    ) {
       return;
     }
 
@@ -482,7 +491,7 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
   };
 
   return (
-    <AppShell>
+    <AppShell variant={'chat'}>
       <section className={styles.page} aria-labelledby={'chatlaetus-title'}>
         <header className={styles.header}>
           <button
@@ -492,9 +501,10 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
             onClick={onNavigateHome}
           >
             <FontAwesomeIcon icon={faArrowLeft} />
+            <span className={styles.headerButtonLabel}>포트폴리오</span>
           </button>
           <div className={styles.titleGroup}>
-            <p className={styles.eyebrow}>Laetipark assistant</p>
+            <p className={styles.eyebrow}>LAETIPARK / ASSISTANT</p>
             <h1 className={styles.title} id={'chatlaetus-title'}>
               Chat Laetus
             </h1>
@@ -503,21 +513,27 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
             className={styles.iconButton}
             type={'button'}
             aria-label={'대화 초기화'}
+            disabled={isSending}
             onClick={resetChat}
           >
             <FontAwesomeIcon icon={faRotateLeft} />
+            <span className={styles.headerButtonLabel}>대화 초기화</span>
           </button>
         </header>
 
         {!isConfigured && (
           <div className={styles.notice} role={'status'}>
-            GitHub Actions secret 또는 로컬 환경 변수에 VITE_API_BASE_URL을
-            설정하면 채팅을 사용할 수 있습니다.
+            <strong>지금은 채팅을 사용할 수 없습니다.</strong>
+            <span>잠시 후 다시 방문하거나 포트폴리오를 둘러보세요.</span>
           </div>
         )}
 
         <div className={styles.chatPanel}>
-          <div className={styles.messageList} aria-live={'polite'}>
+          <div
+            className={styles.messageList}
+            aria-label={'최근 질문과 응답'}
+            aria-live={'polite'}
+          >
             {visibleMessages.map((message, index) => (
               <article
                 className={`${styles.message} ${
@@ -528,7 +544,7 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
                 key={`${message.role}-${index}-${message.content}`}
               >
                 <span className={styles.messageRole}>
-                  {message.role === 'user' ? 'You' : 'Laetus'}
+                  {message.role === 'user' ? '나' : 'Laetus'}
                 </span>
                 {message.images && message.images.length > 0 && (
                   <div className={styles.messageImages}>
@@ -571,100 +587,24 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
           )}
 
           <form className={styles.form} onSubmit={handleSubmit}>
-            <div className={styles.nicknameField}>
-              <label
-                className={styles.inputLabel}
-                htmlFor={'chatlaetus-nickname'}
-              >
-                닉네임
-              </label>
-              <input
-                className={styles.nicknameInput}
-                id={'chatlaetus-nickname'}
-                type={'text'}
-                value={clientNickname}
-                maxLength={clientNicknameMaxLength}
-                autoComplete={'nickname'}
-                placeholder={'선택 입력'}
-                disabled={isSending}
-                onChange={(event) =>
-                  setClientNickname(
-                    event.target.value.slice(0, clientNicknameMaxLength),
-                  )
-                }
-              />
-            </div>
-            <button
-              className={`${styles.thinkingButton} ${
-                enableThinking ? styles.thinkingButtonActive : ''
-              }`}
-              type={'button'}
-              aria-label={'깊게 생각하기'}
-              aria-pressed={enableThinking}
-              title={'깊게 생각하기'}
-              disabled={isSending}
-              onClick={() =>
-                setEnableThinking((currentValue) => !currentValue)
-              }
-            >
-              <FontAwesomeIcon icon={faBrain} />
-            </button>
-            <label
-              className={`${styles.attachButton} ${
-                selectedImages.length > 0 ? styles.attachButtonActive : ''
-              }`}
-              aria-label={'이미지 첨부'}
-              title={'이미지 첨부'}
-            >
-              <FontAwesomeIcon icon={faPaperclip} />
-              <input
-                className={styles.fileInput}
-                type={'file'}
-                accept={'image/*'}
-                multiple
-                disabled={!isConfigured || isSending}
-                onChange={handleImageInputChange}
-              />
-            </label>
-            <div className={styles.messageField}>
-              <label className={styles.inputLabel} htmlFor={'chatlaetus-input'}>
-                메시지
-              </label>
-              <textarea
-                className={styles.textarea}
-                id={'chatlaetus-input'}
-                value={input}
-                rows={1}
-                placeholder={
-                  isConfigured
-                    ? '질문을 입력하거나 이미지를 첨부하세요.'
-                    : 'API 설정이 필요합니다.'
-                }
-                disabled={!isConfigured || isSending}
-                onChange={(event) => setInput(event.target.value)}
-                onKeyDown={handleInputKeyDown}
-              />
-            </div>
-            <button
-              className={styles.sendButton}
-              type={'submit'}
-              disabled={!canSend}
-            >
-              <FontAwesomeIcon icon={faPaperPlane} />
-              <span>전송</span>
-            </button>
             {selectedImages.length > 0 && (
-              <div className={styles.attachmentTray}>
+              <div
+                className={styles.attachmentTray}
+                aria-label={'첨부할 이미지'}
+              >
                 {selectedImages.map((image, index) => (
                   <div
                     className={styles.attachmentPreview}
                     key={`${image.id ?? image.name ?? image.mimeType}-${index}`}
                   >
-                    <img src={image.dataUrl} alt={image.name ?? '첨부 이미지'} />
+                    <img
+                      src={image.dataUrl}
+                      alt={image.name ?? '첨부 이미지'}
+                    />
                     <button
                       className={styles.removeAttachmentButton}
                       type={'button'}
-                      aria-label={'첨부 이미지 제거'}
+                      aria-label={`${image.name ?? `이미지 ${index + 1}`} 첨부 제거`}
                       disabled={isSending}
                       onClick={() => removeSelectedImage(image.id, index)}
                     >
@@ -674,6 +614,104 @@ export const ChatLaetusPage = ({ onNavigateHome }: ChatLaetusPageProps) => {
                 ))}
               </div>
             )}
+            <div className={styles.messageField}>
+              <div className={styles.messageLabelRow}>
+                <label
+                  className={styles.inputLabel}
+                  htmlFor={'chatlaetus-input'}
+                >
+                  메시지
+                </label>
+                <span className={styles.inputHint} id={'chatlaetus-input-hint'}>
+                  Enter 전송 · Shift+Enter 줄바꿈
+                </span>
+              </div>
+              <textarea
+                className={styles.textarea}
+                id={'chatlaetus-input'}
+                aria-describedby={
+                  'chatlaetus-input-hint chatlaetus-storage-note'
+                }
+                value={input}
+                rows={2}
+                placeholder={
+                  isConfigured
+                    ? '질문을 입력하거나 이미지를 첨부하세요.'
+                    : '채팅을 사용할 수 있게 되면 여기에 입력할 수 있어요.'
+                }
+                disabled={!isConfigured || isSending}
+                onChange={(event) => setInput(event.target.value)}
+                onKeyDown={handleInputKeyDown}
+              />
+            </div>
+            <div className={styles.toolbar}>
+              <label
+                className={`${styles.attachButton} ${
+                  selectedImages.length > 0 ? styles.attachButtonActive : ''
+                } ${!isConfigured || isSending ? styles.controlDisabled : ''}`}
+              >
+                <FontAwesomeIcon icon={faPaperclip} />
+                <span>이미지 첨부</span>
+                <input
+                  className={styles.fileInput}
+                  type={'file'}
+                  accept={'image/*'}
+                  aria-label={'이미지 첨부'}
+                  multiple
+                  disabled={!isConfigured || isSending}
+                  onChange={handleImageInputChange}
+                />
+              </label>
+              <button
+                className={`${styles.thinkingButton} ${
+                  enableThinking ? styles.thinkingButtonActive : ''
+                }`}
+                type={'button'}
+                aria-pressed={enableThinking}
+                disabled={isSending}
+                onClick={() =>
+                  setEnableThinking((currentValue) => !currentValue)
+                }
+              >
+                <FontAwesomeIcon icon={faBrain} />
+                <span>깊게 생각하기</span>
+              </button>
+              <button
+                className={styles.sendButton}
+                type={'submit'}
+                disabled={!canSend}
+              >
+                <FontAwesomeIcon icon={faPaperPlane} />
+                <span>전송</span>
+              </button>
+            </div>
+            <div className={styles.nicknameField}>
+              <label
+                className={styles.inputLabel}
+                htmlFor={'chatlaetus-nickname'}
+              >
+                닉네임 <span className={styles.optionalLabel}>(선택)</span>
+              </label>
+              <input
+                className={styles.nicknameInput}
+                id={'chatlaetus-nickname'}
+                type={'text'}
+                value={clientNickname}
+                maxLength={clientNicknameMaxLength}
+                autoComplete={'nickname'}
+                placeholder={'어떻게 불러드릴까요?'}
+                disabled={isSending}
+                onChange={(event) =>
+                  setClientNickname(
+                    event.target.value.slice(0, clientNicknameMaxLength),
+                  )
+                }
+              />
+            </div>
+            <p className={styles.storageNote} id={'chatlaetus-storage-note'}>
+              메시지와 이미지는 응답 생성을 위해 전송되며, 마지막 대화는 이
+              브라우저에 저장됩니다.
+            </p>
           </form>
         </div>
       </section>
