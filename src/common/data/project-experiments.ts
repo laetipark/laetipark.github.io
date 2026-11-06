@@ -8,6 +8,8 @@ import moneyIsMoneyBanner from '../../assets/projects/money-is-money-banner.png'
 import moneyIsMoneyErd from '../../assets/projects/money-is-money-erd.png';
 
 import type { PortfolioProject } from '../types/portfolio';
+import gowatchBanner from '../../assets/projects/gowatch-banner.png';
+import blossomBotBanner from '../../assets/projects/blossom-bot-banner.png';
 
 export const experimentProjects: PortfolioProject[] = [
   {
@@ -206,6 +208,9 @@ export const experimentProjects: PortfolioProject[] = [
     id: 'gowatch-bot',
     title: 'Gowatch',
     category: 'bot',
+    banner: gowatchBanner,
+    bannerAlt: '노란 스톱워치와 G 심볼을 담은 Gowatch 집중 타이머 배너',
+    bannerCaption: '프로젝트 소개 배너 · AI 생성',
     image: gowatchLogo,
     imageAlt: '노란 바탕에 타이머 모양을 더한 Gowatch 봇 로고',
     imageCaption: '봇 로고 · 프로젝트 저장소',
@@ -259,6 +264,9 @@ export const experimentProjects: PortfolioProject[] = [
     id: 'blossom-bot',
     title: 'Blossom Bot',
     category: 'bot',
+    banner: blossomBotBanner,
+    bannerAlt: '보라색 벚꽃 B 심볼과 게임 카드를 담은 Blossom Bot 배너',
+    bannerCaption: '프로젝트 소개 배너 · AI 생성',
     image: blossomBotLogo,
     imageAlt: '보라색 바탕의 벚꽃과 B 문양으로 구성한 Blossom Discord 봇 로고',
     imageCaption: '봇 로고 · 프로젝트 저장소',

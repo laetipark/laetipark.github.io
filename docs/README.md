@@ -2,7 +2,7 @@
 
 이 문서는 Laetipark 포트폴리오 작업을 시작할 때 사용하는 문서 라우터입니다. 루트의 [AGENTS.md](../AGENTS.md)와 [CLAUDE.md](../CLAUDE.md)는 이 문서로 안내하는 역할만 하며, 프로젝트 규칙의 정본은 `docs/rules/`에 둡니다.
 
-[저장소 소개와 실행 방법](../README.md) · [화면 목업과 검증 기록](design/portfolio-redesign.md) · [프로젝트 근거 자료](design/project-sources.md)
+[저장소 소개와 실행 방법](../README.md) · [화면 목업과 검증 기록](design/portfolio-redesign.md) · [프로젝트 근거 자료](design/project-sources.md) · [생성 배너 기록](design/generated-banners.md)
 
 ## 시작 순서
 

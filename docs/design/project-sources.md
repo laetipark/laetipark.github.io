@@ -9,8 +9,8 @@
 - Brawl Tree·Sexynogi를 대표 프로젝트로 배치하고 웹 서비스 6개, 앱 1개, API·백엔드 4개, 봇 2개로 분류합니다.
 - 기간과 상태는 기존 Brawl Tree·Blossom Stats의 표기를 보존합니다. 새 프로젝트의 날짜·운영 상태·성과 수치는 추정하지 않습니다.
 - 협업 프로젝트는 README에 명시된 개인 담당 역할과 서비스 전체 기능을 구분합니다.
-- 목록은 실제 배너를 우선 사용하고, 배너가 없는 경우 로고 또는 기존 화면을 표시합니다. 상세는 화면·ERD와 구현 설명을 연결합니다.
-- 공개 원본은 `src/assets/projects/`에 저장합니다. 원본 비율을 유지하며 캡션에서 배너·로고·화면·목업·ERD를 구분합니다. 생성한 가상 서비스 화면은 사용하지 않았습니다.
+- 목록은 프로젝트 배너를 우선 사용하고, 배너가 없는 경우 로고 또는 기존 화면을 표시합니다. 사용자 요청으로 Chat Laetus·UNINOTE·산등성이·Gowatch·Blossom Bot에는 소개 배너를 생성해 사용하며 기존 화면·로고는 상세용으로 보존합니다.
+- 공개 원본과 생성 배너는 `src/assets/projects/`에 저장합니다. 원본 비율을 유지하며 캡션에서 배너·로고·화면·목업·ERD를 구분합니다. 생성 배너의 캡션은 `프로젝트 소개 배너 · AI 생성`이며 실제 서비스 화면을 나타내지 않습니다. 제작 근거와 출력 정보는 [생성 배너 기록](generated-banners.md)에 둡니다.
 
 ## 기본 프로젝트
 
@@ -24,22 +24,22 @@
 
 ## 기본 이미지와 배너
 
-| 프로젝트      | 목록 이미지                                                                                                                                                                                      | 상세 이미지와 출처                                    |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
-| Brawl Tree    | [공식 가로형 로고](https://github.com/laetipark/brawltree/blob/master/frontend/public/images/logo/brawltree/logo_horizontal.png) → [로컬 자산](../../src/assets/projects/brawltree-wordmark.png) | 기존 [서비스 화면](../../src/assets/brawltree.png)    |
-| Sexynogi      | [README 대표 배너](https://github.com/laetipark/mobinogi-web/blob/master/frontend/public/thumbnail.png) → [로컬 자산](../../src/assets/projects/sexynogi-banner.png)                             | 같은 원본 사용, 상세에서 중복 표시하지 않음           |
-| UNINOTE       | [로드맵 안내 화면](https://github.com/laetipark/uninote-web/blob/master/BBS/WebContent/img/1.%20map.PNG) → [로컬 자산](../../src/assets/projects/uninote-screen.png)                             | 전용 배너를 찾지 못해 실제 화면 사용                  |
-| 산등성이      | [앱 로고](https://github.com/laetipark/happy-mountain/blob/master/mobile/assets/images/logo.png) → [로컬 자산](../../src/assets/projects/happy-mountain.png)                                     | 전용 배너 없이 기존 로고 사용                         |
-| Blossom Stats | [Blossom 가로형 로고](https://github.com/laetipark/brawltree/blob/master/frontend/public/images/logo/blossom/logo_horizontal.png) → [로컬 자산](../../src/assets/projects/blossom-banner.png)    | 기존 [서비스 화면](../../src/assets/blossomstats.png) |
+| 프로젝트      | 목록 이미지                                                                                                                                                                                      | 상세 이미지와 출처                                                                                                                                                   |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Brawl Tree    | [공식 가로형 로고](https://github.com/laetipark/brawltree/blob/master/frontend/public/images/logo/brawltree/logo_horizontal.png) → [로컬 자산](../../src/assets/projects/brawltree-wordmark.png) | 기존 [서비스 화면](../../src/assets/brawltree.png)                                                                                                                   |
+| Sexynogi      | [README 대표 배너](https://github.com/laetipark/mobinogi-web/blob/master/frontend/public/thumbnail.png) → [로컬 자산](../../src/assets/projects/sexynogi-banner.png)                             | 같은 원본 사용, 상세에서 중복 표시하지 않음                                                                                                                          |
+| UNINOTE       | [생성 소개 배너](../../src/assets/projects/uninote-banner.png) · [제작 기록](generated-banners.md)                                                                                               | [로드맵 안내 화면](https://github.com/laetipark/uninote-web/blob/master/BBS/WebContent/img/1.%20map.PNG) → [로컬 자산](../../src/assets/projects/uninote-screen.png) |
+| 산등성이      | [생성 소개 배너](../../src/assets/projects/happy-mountain-banner.png) · [제작 기록](generated-banners.md)                                                                                        | [앱 로고](https://github.com/laetipark/happy-mountain/blob/master/mobile/assets/images/logo.png) → [로컬 자산](../../src/assets/projects/happy-mountain.png)         |
+| Blossom Stats | [Blossom 가로형 로고](https://github.com/laetipark/brawltree/blob/master/frontend/public/images/logo/blossom/logo_horizontal.png) → [로컬 자산](../../src/assets/projects/blossom-banner.png)    | 기존 [서비스 화면](../../src/assets/blossomstats.png)                                                                                                                |
 
-공개 저장소 파일 목록과 README에서 자산 경로를 확인한 뒤 내려받아 직접 검토했습니다. 학습 기록 날짜나 저장소 생성일을 프로젝트 개발 기간으로 바꾸지 않았습니다.
+공개 저장소에서 가져온 자산은 파일 목록과 README에서 경로를 확인한 뒤 내려받아 직접 검토했습니다. 2026-11-07 최초 조사에서 UNINOTE와 산등성이의 전용 배너는 찾지 못했으며, 이후 사용자 요청으로 생성 소개 배너를 추가합니다. 학습 기록 날짜나 저장소 생성일을 프로젝트 개발 기간으로 바꾸지 않았습니다.
 
 ## 추가 프로젝트의 상세 근거
 
 - [서비스 프로젝트 근거와 배너](sources-services.md): Orsem, Mystery Mango, Chat Laetus · LaetiPark API
 - [백엔드·봇 프로젝트 근거와 배너](sources-experiments.md): 돈이머니, 여기가자, 피드모아, Gowatch, Blossom Bot
 
-배너가 없는 Chat Laetus는 실제 로컬 UI에서 통제된 예시 응답을 캡처했습니다. 해당 이미지는 모델의 실제 추론 결과나 운영 서버 성능을 나타내지 않습니다. 각 프로젝트 서버·봇의 기능 테스트를 이번 포트폴리오 조사에서 수행한 것은 아닙니다.
+Chat Laetus는 생성 소개 배너와 별도로 실제 로컬 UI에서 통제된 예시 응답을 캡처한 상세 이미지를 보존합니다. 해당 화면은 모델의 실제 추론 결과나 운영 서버 성능을 나타내지 않습니다. 각 프로젝트 서버·봇의 기능 테스트를 이번 포트폴리오 조사에서 수행한 것은 아닙니다.
 
 ## 운영 링크 확인
 

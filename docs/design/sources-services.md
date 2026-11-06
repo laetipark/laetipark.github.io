@@ -28,7 +28,7 @@
 - [manifest](https://github.com/laetipark/laetipark-api/blob/master/package.json): 소개한 서버 기술 확인
 - 체험 링크는 현재 포트폴리오의 `/chat`입니다. API 문서의 `https://api.laetipark.me`는 운영 권장 주소로 표현돼 있어 방문용 링크로 추가하지 않았습니다.
 
-## 대표 이미지의 출처
+## 상세 이미지의 출처
 
 공개 저장소의 원본 파일을 2026-11-07 내려받아 시각적으로 확인했습니다. Git blob SHA로 원본과 다운로드 파일의 일치도 확인했습니다. Chat Laetus는 같은 날 현재 포트폴리오의 로컬 화면을 별도로 캡처하고 확인했습니다.
 
@@ -40,15 +40,17 @@
 
 - Orsem은 1414×2200px 원본 UI 보드이며 모의 데이터를 사용합니다. 캡션은 `저장소의 UI 목업 · 예시 데이터`로 표기하고 [README의 이미지 기준](https://github.com/laetipark/orsem/blob/master/README.md)을 따릅니다.
 - Mystery Mango는 1838×871px 홈 이미지입니다. 배포 화면을 바탕으로 정리한 Figma UI이며, 화면 기준일과 브랜딩 갱신일, 캡처 방식을 [이미지 기준](https://github.com/laetipark/mystery-mango/blob/main/docs/screens.md#이미지-기준과-갱신)과 구분합니다. 캡션은 `배포 화면을 바탕으로 정리한 Figma UI`로 표기합니다.
-- LaetiPark API 저장소에는 조사 시점에 이미지 자산이 없습니다. Chat Laetus의 대표 이미지는 현재 포트폴리오의 로컬 UI를 1200×800px로 캡처했습니다. 실제 모델 응답이 아닌 통제된 로컬 API의 예시 응답을 표시했으며 캡션은 `로컬 채팅 화면 · 예시 응답`입니다.
+- LaetiPark API 저장소에는 2026-11-07 최초 조사 시점에 이미지 자산이 없었습니다. Chat Laetus의 상세 이미지는 현재 포트폴리오의 로컬 UI를 1200×800px로 캡처했습니다. 실제 모델 응답이 아닌 통제된 로컬 API의 예시 응답을 표시했으며 캡션은 `로컬 채팅 화면 · 예시 응답`입니다.
 
 ## 프로젝트 배너의 출처
 
-2026-11-07 공개 저장소의 README와 전체 파일 트리에서 실제 배너를 확인해 원본을 내려받았습니다. 각 파일을 직접 열어 확인하고 Git blob SHA가 원본과 일치하는지 검사했습니다. 기존 UI 이미지는 상세 화면용으로 유지합니다.
+2026-11-07 Orsem과 Mystery Mango의 공개 저장소 README와 전체 파일 트리에서 실제 배너를 확인해 원본을 내려받았습니다. 아래 두 파일을 직접 열어 확인하고 Git blob SHA가 원본과 일치하는지 검사했습니다. 기존 UI 이미지는 상세 화면용으로 유지합니다.
 
 | 로컬 배너                                      | 원본                                                                                                            | 크기       | Git blob SHA                               |
 | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ---------- | ------------------------------------------ |
 | `src/assets/projects/orsem-banner.png`         | [Orsem README 배너](https://github.com/laetipark/orsem/blob/master/docs/assets/orsem-banner.png)                | 2172×724px | `0d80e0dd7449ff0466041964125ab289b3cdabc1` |
 | `src/assets/projects/mystery-mango-banner.png` | [Mystery Mango README 배너](https://github.com/laetipark/mystery-mango/blob/main/docs/images/readme-banner.png) | 1730×909px | `12c8cd9d712f5f32da418fabdb7400de088b0a2e` |
 
-두 배너의 캡션은 `공개 저장소의 프로젝트 배너`입니다. LaetiPark API에는 배너·커버·이미지 자산이 확인되지 않아 배너 필드를 추가하지 않았으며, 기존 Chat Laetus 로컬 채팅 화면을 대체 이미지로 유지합니다.
+두 배너의 캡션은 `공개 저장소의 프로젝트 배너`입니다.
+
+LaetiPark API에는 2026-11-07 최초 조사 시점에 배너·커버·이미지 자산이 확인되지 않았습니다. 이후 사용자 요청으로 [Chat Laetus 소개 배너](../../src/assets/projects/chat-laetus-banner.png)를 생성해 `banner`에 연결하고 `프로젝트 소개 배너 · AI 생성`으로 표시합니다. 이 배너는 실제 채팅 화면을 표현하지 않으며 기존 로컬 채팅 화면은 상세용 `image`로 보존합니다. 제작 근거와 출력 정보는 [생성 배너 기록](generated-banners.md)에 둡니다.

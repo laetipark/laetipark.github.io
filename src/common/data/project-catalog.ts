@@ -5,6 +5,8 @@ import brawlTreeImage from '../../assets/brawltree.png';
 import sexynogiImage from '../../assets/projects/sexynogi-banner.png';
 import uninoteImage from '../../assets/projects/uninote-screen.png';
 import mountainImage from '../../assets/projects/happy-mountain.png';
+import mountainBanner from '../../assets/projects/happy-mountain-banner.png';
+import uninoteBanner from '../../assets/projects/uninote-banner.png';
 import type { PortfolioProject } from '../types/portfolio';
 import { experimentProjects } from './project-experiments';
 import { serviceProjects } from './project-services';
@@ -138,6 +140,9 @@ export const projects: PortfolioProject[] = [
     id: 'uninote',
     title: 'UNINOTE',
     category: 'web',
+    banner: uninoteBanner,
+    bannerAlt: '하늘색 배경의 노트와 마인드맵을 그린 UNINOTE 소개 배너',
+    bannerCaption: '프로젝트 소개 배너 · AI 생성',
     summary:
       '학습 내용을 마인드맵으로 정리하고 노트와 첨부 자료를 관리하는 웹·Android 프로젝트입니다.',
     highlights: [
@@ -187,6 +192,9 @@ export const projects: PortfolioProject[] = [
     id: 'happy-mountain',
     title: '산등성이',
     category: 'app',
+    banner: mountainBanner,
+    bannerAlt: '웃는 해와 초록 산길, 산등성이 이름을 담은 소개 배너',
+    bannerCaption: '프로젝트 소개 배너 · AI 생성',
     summary:
       '주변 산과 날씨, 지역별 산불 위험 예보를 지도에서 확인하는 Flutter 앱입니다.',
     highlights: [

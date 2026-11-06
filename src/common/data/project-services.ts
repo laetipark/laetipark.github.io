@@ -3,6 +3,7 @@ import type { PortfolioProject } from '../types/portfolio';
 import orsemImage from '../../assets/projects/orsem-ui.png';
 import mysteryMangoImage from '../../assets/projects/mystery-mango.jpg';
 import chatLaetusImage from '../../assets/projects/chat-laetus.jpg';
+import chatLaetusBanner from '../../assets/projects/chat-laetus-banner.png';
 import orsemBanner from '../../assets/projects/orsem-banner.png';
 import mysteryMangoBanner from '../../assets/projects/mystery-mango-banner.png';
 
@@ -141,6 +142,10 @@ export const serviceProjects: PortfolioProject[] = [
     id: 'chat-laetus',
     title: 'Chat Laetus · LaetiPark API',
     category: 'backend',
+    banner: chatLaetusBanner,
+    bannerAlt:
+      '초록 배경에 대화 말풍선과 이미지 입력을 표현한 Chat Laetus 배너',
+    bannerCaption: '프로젝트 소개 배너 · AI 생성',
     image: chatLaetusImage,
     imageAlt:
       '예시 질문과 응답, 이미지 첨부와 깊게 생각하기 도구가 있는 Chat Laetus 화면',

@@ -142,3 +142,7 @@ Laetus 응답 / 응답 준비 상태
 배포 대상은 [운영 포트폴리오](https://laetipark.me/)이며, 배포 실행 이력은 [GitHub Actions](https://github.com/laetipark/laetipark.github.io/actions/workflows/deploy.yml)에서 확인합니다.
 
 운영 배포 후 GitHub Pages 주소에서 사용자 도메인으로의 연결, 13개 프로젝트 표시, `/chat` 직접 접근·새로고침·뒤로 가기를 확인했습니다. 채팅 입력은 운영 API 설정을 인식해 활성화되며, 운영 API에 테스트 메시지는 전송하지 않았습니다. 포트폴리오로 되돌아오는 Sexynogi의 이전 서비스 링크는 제거하고 저장소 링크를 유지했습니다.
+
+## 소개 배너 후속 적용
+
+2026-11-07 후속 요청으로 Chat Laetus·UNINOTE·산등성이·Gowatch·Blossom Bot의 배너를 제작했습니다. 다섯 PNG의 원본 크기는 1672×941px로 같으며 목록은 기존 16:9 영역을 유지합니다. 실제 화면과 로고는 상세에 보존했습니다. 배너 파일, 프롬프트, 저장소 README 반영과 검증 결과는 [생성 배너 기록](generated-banners.md)에 정리합니다.

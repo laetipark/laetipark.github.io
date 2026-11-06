@@ -26,11 +26,11 @@
 | 여기가자 | 팀 저장소의 [GitHub 배너 첨부](https://github.com/Wanted-Pre-Onboarding-Team-E/geography-based-restaurant-recommendation/assets/68440583/9c848047-be3f-4827-9b14-bccf398b6022) | [lets-go-here-banner.png](../../src/assets/projects/lets-go-here-banner.png)     |
 | 피드모아 | 팀 저장소의 [GitHub 배너 첨부](https://github.com/Wanted-Pre-Onboarding-Team-E/social-media-integration-feed/assets/68440583/4f74e658-1226-4caa-82c2-80885ed1b49d)             | [feed-moa-banner.png](../../src/assets/projects/feed-moa-banner.png)             |
 
-Gowatch와 Blossom Bot은 README와 저장소 파일 목록에서 별도의 배너·헤더·커버 이미지를 찾지 못했습니다. 기존 로고를 대표 이미지로 유지하며 `banner` 필드는 추가하지 않습니다. 로고를 배너로 명명하거나 가상의 서비스 화면을 만들지 않았습니다.
+Gowatch와 Blossom Bot은 2026-11-07 최초 조사에서 README와 저장소 파일 목록에 별도의 배너·헤더·커버 이미지가 없었습니다. 이후 사용자 요청으로 [Gowatch 소개 배너](../../src/assets/projects/gowatch-banner.png)와 [Blossom Bot 소개 배너](../../src/assets/projects/blossom-bot-banner.png)를 생성해 `banner`에 연결합니다. 캡션은 `프로젝트 소개 배너 · AI 생성`이며 실제 봇 화면을 나타내지 않습니다. 기존 로고는 상세용 `image`로 보존하고 제작 근거와 출력 정보는 [생성 배너 기록](generated-banners.md)에 둡니다.
 
 ## 상세 이미지와 로고 출처
 
-대표 이미지는 공개 README나 저장소가 제공하는 원본을 그대로 내려받았습니다. 서비스 화면으로 오해하지 않도록 이미지 설명에 ERD 또는 로고를 표시합니다.
+아래 상세 이미지는 공개 README나 저장소가 제공하는 원본을 그대로 내려받았습니다. 서비스 화면으로 오해하지 않도록 이미지 설명에 ERD 또는 로고를 표시합니다.
 
 | 프로젝트    | 이미지 종류                  | 원본과 로컬 자산                                                                                                                                                                                                |
 | ----------- | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -40,7 +40,7 @@ Gowatch와 Blossom Bot은 README와 저장소 파일 목록에서 별도의 배�
 | Gowatch     | 봇 로고 · 120×120            | 저장소의 [public/Gowatch.png](https://github.com/laetipark/gowatch-bot/blob/master/public/Gowatch.png) → [gowatch-logo.png](../../src/assets/projects/gowatch-logo.png)                                         |
 | Blossom Bot | 봇 로고 · 400×480            | 저장소의 [images/blossom_discord_logo.png](https://github.com/laetipark/brawltree-discord/blob/master/images/blossom_discord_logo.png) → [blossom-bot-logo.png](../../src/assets/projects/blossom-bot-logo.png) |
 
-돈이머니 README가 사용하는 첨부 URL에는 이전 저장소 이름인 `budget-manager`가 남아 있습니다. 현재 README에서 참조하는 원본임을 확인했습니다. PNG 형식과 크기를 확인하고 실제 이미지 내용을 검토했으며, 새로 그린 UI나 생성 이미지를 사용하지 않았습니다.
+돈이머니 README가 사용하는 첨부 URL에는 이전 저장소 이름인 `budget-manager`가 남아 있습니다. 현재 README에서 참조하는 원본임을 확인했습니다. 이 문서에 기재한 기존 배너 3개와 상세 이미지 5개는 PNG 형식과 크기, 실제 내용을 검토한 원본이며 생성 이미지로 대체하지 않습니다.
 
 ## 제외한 항목
 
